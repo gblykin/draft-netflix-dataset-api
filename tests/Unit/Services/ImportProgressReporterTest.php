@@ -77,4 +77,57 @@ class ImportProgressReporterTest extends TestCase
 
         $this->assertEquals('Test error message', $stats['error']);
     }
+
+    public function test_memory_efficient_error_handling()
+    {
+        // Set a small limit for testing
+        $this->reporter->setMaxErrorsToKeep(3);
+        
+        // Add more errors than the limit
+        $this->reporter->recordFailure('Error 1', 1);
+        $this->reporter->recordFailure('Error 2', 2);
+        $this->reporter->recordFailure('Error 3', 3);
+        $this->reporter->recordFailure('Error 4', 4);
+        $this->reporter->recordFailure('Error 5', 5);
+        
+        $stats = $this->reporter->getStats();
+        
+        // Should have 5 total failures
+        $this->assertEquals(5, $stats['failed']);
+        
+        // But only keep the last 3 errors in memory
+        $this->assertCount(3, $stats['errors']);
+        
+        // Should keep the most recent errors
+        $this->assertEquals('Error 3', $stats['errors'][0]['details']);
+        $this->assertEquals('Error 4', $stats['errors'][1]['details']);
+        $this->assertEquals('Error 5', $stats['errors'][2]['details']);
+    }
+
+    public function test_get_recent_errors_returns_correct_errors()
+    {
+        $this->reporter->recordFailure('Error 1', 1);
+        $this->reporter->recordFailure('Error 2', 2);
+        
+        $recentErrors = $this->reporter->getRecentErrors();
+        
+        $this->assertCount(2, $recentErrors);
+        $this->assertEquals('Error 1', $recentErrors[0]['details']);
+        $this->assertEquals(1, $recentErrors[0]['row']);
+    }
+
+    public function test_get_error_count_returns_correct_count()
+    {
+        $this->reporter->recordFailure('Error 1');
+        $this->reporter->recordFailure('Error 2');
+        $this->reporter->recordFailure('Error 3');
+        
+        $this->assertEquals(3, $this->reporter->getErrorCount());
+    }
+
+    public function test_set_max_errors_to_keep_updates_limit()
+    {
+        $this->reporter->setMaxErrorsToKeep(100);
+        $this->assertEquals(100, $this->reporter->getMaxErrorsToKeep());
+    }
 }

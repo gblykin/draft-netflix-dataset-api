@@ -93,7 +93,7 @@ class DataImportService
             // Validate the transformed data
             if (!$this->transformer->validate($transformedData)) {
                 $validationErrors = $this->transformer->getValidationErrors();
-                $this->progressReporter->recordFailure('Validation failed: ' . implode(', ', $validationErrors));
+                $this->progressReporter->recordFailure('Validation failed: ' . implode(', ', $validationErrors), $index + 1);
                 
                 // Log validation errors using the new logger
                 $this->logger->logValidationError($index + 1, $validationErrors, $rawData, $transformedData);
@@ -104,14 +104,14 @@ class DataImportService
             if ($this->writer->writeRecord($transformedData)) {
                 $this->progressReporter->recordSuccess();
             } else {
-                $this->progressReporter->recordFailure('Write failed: Could not write record to destination');
+                $this->progressReporter->recordFailure('Write failed: Could not write record to destination', $index + 1);
                 
                 // Log write failures using the new logger
                 $this->logger->logWriteError($index + 1, $transformedData);
             }
             
         } catch (\Exception $e) {
-            $this->progressReporter->recordFailure('Processing error: ' . $e->getMessage());
+            $this->progressReporter->recordFailure('Processing error: ' . $e->getMessage(), $index + 1);
             
             // Log processing errors using the new logger
             $this->logger->logProcessingError($index + 1, $e->getMessage(), $rawData);
@@ -121,7 +121,7 @@ class DataImportService
     private function getImportSummary(): array
     {
         $stats = $this->progressReporter->getStats();
-        $stats['duration_seconds'] = now()->diffInSeconds($stats['started_at']);
+        $stats['duration_seconds'] = $stats['started_at']->diffInSeconds(now());
         $stats['success_rate'] = $stats['total_processed'] > 0 
             ? round(($stats['successful'] / $stats['total_processed']) * 100, 2) 
             : 0;

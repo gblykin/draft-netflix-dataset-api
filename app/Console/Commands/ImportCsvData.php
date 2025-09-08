@@ -120,21 +120,35 @@ class ImportCsvData extends Command
                 ['Total Processed', $stats['total_processed']],
                 ['Successful', $stats['successful']],
                 ['Failed', $stats['failed']],
-                ['Duration', $stats['duration'] . ' seconds'],
+                ['Duration', $stats['duration_seconds'] . ' seconds'],
             ]
         );
         
         if ($stats['failed'] > 0) {
             $this->warn("Errors encountered during import:");
-            $errorTable = array_slice($result['errors'], 0, 10); // Show first 10 errors
-            $this->table(
-                ['Row', 'Type', 'Details'],
-                array_map(fn($error) => [
-                    $error['row'],
-                    $error['type'],
-                    implode('; ', $error['details'])
-                ], $errorTable)
-            );
+            
+            // Show recent errors (up to 10) with memory-efficient approach
+            $errorTable = array_slice($result['errors'], 0, 10);
+            
+            // Add note about error limit if there are more errors than shown
+            if ($stats['failed'] > 10) {
+                $this->info("Showing last 10 errors out of {$stats['failed']} total errors.");
+                $this->info("Note: Only the most recent 50 errors are kept in memory to prevent memory issues.");
+            }
+            // Handle both string errors and array errors for backward compatibility
+            $tableData = array_map(function($error) {
+                if (is_string($error)) {
+                    return ['N/A', 'Error', $error];
+                } else {
+                    return [
+                        $error['row'] ?? 'N/A',
+                        $error['type'] ?? 'Error',
+                        is_array($error['details']) ? implode('; ', $error['details']) : ($error['details'] ?? 'Unknown error')
+                    ];
+                }
+            }, $errorTable);
+            
+            $this->table(['Row', 'Type', 'Details'], $tableData);
             
             if (count($result['errors']) > 10) {
                 $this->warn("... and " . (count($result['errors']) - 10) . " more errors");
