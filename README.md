@@ -88,12 +88,16 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `GET /api/movies/{id}` - Get movie details with reviews and users
 
 **Query Parameters for Movies:**
-- `genre` - Filter by genre (partial match)
-- `release_year` - Filter by release year
-- `rating` - Filter by MPAA rating
-- `country` - Filter by country (partial match)
+- `genre` - Filter by genre (searches both primary and secondary genres)
+- `genre_primary` - Filter by primary genre only (partial match)
+- `genre_secondary` - Filter by secondary genre only (partial match)
+- `content_type` - Filter by content type (Movie, TV Series, etc.)
+- `release_year` - Filter by release year (exact match)
+- `rating` - Filter by MPAA rating (exact match)
+- `country_of_origin` - Filter by country of origin (partial match)
 - `language` - Filter by language (partial match)
-- `sort_by` - Sort by field (title, release_year, duration, budget, revenue)
+- `is_netflix_original` - Filter by Netflix original status (true/false)
+- `sort_by` - Sort by field (title, release_year, duration_minutes, production_budget, box_office_revenue, imdb_rating)
 - `sort_order` - Sort order (asc, desc)
 - `page` - Page number
 - `per_page` - Items per page (max 100)
@@ -103,12 +107,16 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `GET /api/users/{id}` - Get user details with reviews and movies
 
 **Query Parameters for Users:**
-- `subscription_type` - Filter by subscription type
+- `subscription_plan` - Filter by subscription plan (exact match)
 - `country` - Filter by country (partial match)
-- `gender` - Filter by gender
+- `gender` - Filter by gender (exact match)
 - `age_min` - Minimum age filter
 - `age_max` - Maximum age filter
-- `sort_by` - Sort by field (user_id, age, join_date, monthly_revenue)
+- `is_active` - Filter by active status (true/false)
+- `primary_device` - Filter by primary device (partial match)
+- `household_size_min` - Minimum household size filter
+- `household_size_max` - Maximum household size filter
+- `sort_by` - Sort by field (user_id, age, subscription_start_date, monthly_spend, household_size)
 - `sort_order` - Sort order (asc, desc)
 - `page` - Page number
 - `per_page` - Items per page (max 100)
@@ -122,12 +130,19 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 
 
 **Query Parameters for Reviews:**
-- `user_id` - Filter by user ID
-- `movie_id` - Filter by movie ID
-- `rating` - Filter by exact rating
+- `user_id` - Filter by user ID (exact match)
+- `movie_id` - Filter by movie ID (exact match)
+- `rating` - Filter by exact rating (1-5)
 - `rating_min` - Minimum rating filter
 - `rating_max` - Maximum rating filter
-- `sort_by` - Sort by field (review_date, rating, helpfulness)
+- `device_type` - Filter by device type (partial match)
+- `is_verified_watch` - Filter by verified watch status (true/false)
+- `sentiment` - Filter by sentiment (exact match)
+- `sentiment_score_min` - Minimum sentiment score filter
+- `sentiment_score_max` - Maximum sentiment score filter
+- `date_from` - Filter reviews from date (YYYY-MM-DD)
+- `date_to` - Filter reviews to date (YYYY-MM-DD)
+- `sort_by` - Sort by field (review_date, rating, helpful_votes, total_votes, sentiment_score)
 - `sort_order` - Sort order (asc, desc)
 - `page` - Page number
 - `per_page` - Items per page (max 100)

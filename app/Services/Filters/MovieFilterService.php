@@ -9,6 +9,16 @@ class MovieFilterService extends BaseFilterService
 {
     protected function applyFilters(): void
     {
+        // Support 'genre' parameter that searches both genre_primary and genre_secondary
+        if ($this->request->has('genre')) {
+            $genre = $this->request->input('genre');
+            $this->query->where(function ($query) use ($genre) {
+                $query->where('genre_primary', 'like', '%' . $genre . '%')
+                      ->orWhere('genre_secondary', 'like', '%' . $genre . '%');
+            });
+        }
+
+        // Support 'genre_primary' parameter for backward compatibility
         if ($this->request->has('genre_primary')) {
             $this->query->where('genre_primary', 'like', '%' . $this->request->input('genre_primary') . '%');
         }

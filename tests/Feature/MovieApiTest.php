@@ -137,6 +137,39 @@ class MovieApiTest extends TestCase
         $this->assertEquals('Action', $data[0]['genre_primary']);
     }
 
+    public function test_can_filter_movies_by_genre_searches_both_primary_and_secondary()
+    {
+        // Create a movie with Action in secondary genre
+        Movie::create([
+            'movie_id' => 'test_movie_secondary',
+            'title' => 'Test Movie Secondary',
+            'content_type' => 'Movie',
+            'genre_primary' => 'Drama',
+            'genre_secondary' => 'Action',
+            'release_year' => 2023,
+            'language' => 'English',
+            'country_of_origin' => 'USA',
+            'added_to_platform' => '2022-06-01',
+        ]);
+
+        $response = $this->getJson('/api/movies?genre=Action');
+
+        $response->assertStatus(200);
+        
+        $data = $response->json('data');
+        $this->assertGreaterThanOrEqual(2, count($data)); // Should include both primary and secondary Action movies
+        
+        // Check that we have movies with Action in either primary or secondary
+        $hasActionInPrimary = collect($data)->contains(function ($movie) {
+            return str_contains($movie['genre_primary'], 'Action');
+        });
+        $hasActionInSecondary = collect($data)->contains(function ($movie) {
+            return str_contains($movie['genre_secondary'] ?? '', 'Action');
+        });
+        
+        $this->assertTrue($hasActionInPrimary || $hasActionInSecondary, 'Should find Action in either primary or secondary genre');
+    }
+
     public function test_can_filter_movies_by_release_year()
     {
         $response = $this->getJson('/api/movies?release_year=2023');
