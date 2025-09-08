@@ -1,0 +1,54 @@
+/vendor/
+/node_modules/
+/public/hot
+/public/storage
+/storage/*.key
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode
+# CSV data files (uncomment if you want to exclude them from repository)
+# *.csv
+
+# Keep the sample data files for the project
+!users.csv
+!movies.csv
+!reviews.csv
+/docker/mysql/data/
+.DS_Store
+
+# Laravel specific
+/storage/app/*
+!/storage/app/.gitkeep
+/storage/framework/cache/*
+!/storage/framework/cache/.gitkeep
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitkeep
+/storage/framework/views/*
+!/storage/framework/views/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+
+# Import logs (these can be large)
+/storage/logs/import.log
+
+# Docker volumes
+/docker/mysql/data/*
+!/docker/mysql/data/.gitkeep
+
+# IDE and editor files
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+

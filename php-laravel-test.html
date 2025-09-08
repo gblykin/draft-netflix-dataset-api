@@ -1,0 +1,77 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>php-laravel-test.md</title></head><body id="preview">
+<h1 class="code-line" data-line-start=0 data-line-end=1 ><a id="Test_Assignment__Laravel_REST_API_with_Netflix_Dataset_0"></a>Test Assignment – Laravel REST API with Netflix Dataset</h1>
+<h2 class="code-line" data-line-start=2 data-line-end=3 ><a id="Objective_2"></a>Objective</h2>
+<p class="has-line-data" data-line-start="3" data-line-end="4">Build a simple REST API in <strong>PHP/Laravel</strong> to access and manipulate Netflix dataset data, demonstrating knowledge of:</p>
+<ul>
+<li class="has-line-data" data-line-start="4" data-line-end="5">Relational database modeling (many-to-many relationships)</li>
+<li class="has-line-data" data-line-start="5" data-line-end="6">Data import from CSV</li>
+<li class="has-line-data" data-line-start="6" data-line-end="7">REST API best practices (filtering, pagination, CRUD)</li>
+<li class="has-line-data" data-line-start="7" data-line-end="8">Docker containerization</li>
+<li class="has-line-data" data-line-start="8" data-line-end="10">Clear project documentation</li>
+</ul>
+<hr>
+<h2 class="code-line" data-line-start=12 data-line-end=13 ><a id="Dataset_12"></a>Dataset</h2>
+<p class="has-line-data" data-line-start="13" data-line-end="14">We will use <strong>3 CSV files</strong> from the Netflix 2025 User Behavior dataset:</p>
+<ul>
+<li class="has-line-data" data-line-start="15" data-line-end="16"><a href="https://www.kaggle.com/datasets/sayeeduddin/netflix-2025user-behavior-dataset-210k-records?select=movies.csv"><code>movies.csv</code></a></li>
+<li class="has-line-data" data-line-start="16" data-line-end="17"><a href="https://www.kaggle.com/datasets/sayeeduddin/netflix-2025user-behavior-dataset-210k-records?select=users.csv"><code>users.csv</code></a></li>
+<li class="has-line-data" data-line-start="17" data-line-end="19"><a href="https://www.kaggle.com/datasets/sayeeduddin/netflix-2025user-behavior-dataset-210k-records?select=reviews.csv"><code>reviews.csv</code></a></li>
+</ul>
+<hr>
+<h2 class="code-line" data-line-start=21 data-line-end=22 ><a id="Requirements_21"></a>Requirements</h2>
+<h3 class="code-line" data-line-start=23 data-line-end=24 ><a id="1_Database__Data_Import_23"></a>1. Database &amp; Data Import</h3>
+<ul>
+<li class="has-line-data" data-line-start="24" data-line-end="25">Design a relational schema in MySQL/PostgreSQL to store the above data (showing proper foreign key relationships, especially many-to-many between users and movies via reviews).</li>
+<li class="has-line-data" data-line-start="25" data-line-end="26">Write a migration script to create the tables.</li>
+<li class="has-line-data" data-line-start="26" data-line-end="28">Write a script to import data from the CSV files into the database.</li>
+</ul>
+<h3 class="code-line" data-line-start=28 data-line-end=29 ><a id="2_REST_API_Laravel_28"></a>2. REST API (Laravel)</h3>
+<ul>
+<li class="has-line-data" data-line-start="29" data-line-end="34">Create endpoints to:
+<ul>
+<li class="has-line-data" data-line-start="30" data-line-end="31">List movies (with filtering by genre, release year, etc.)</li>
+<li class="has-line-data" data-line-start="31" data-line-end="32">Get a single movie’s details, including associated reviews and users</li>
+<li class="has-line-data" data-line-start="32" data-line-end="33">Create, update, delete a review</li>
+<li class="has-line-data" data-line-start="33" data-line-end="34">List users with their reviewed movies</li>
+</ul>
+</li>
+<li class="has-line-data" data-line-start="34" data-line-end="35">Support pagination in list endpoints.</li>
+<li class="has-line-data" data-line-start="35" data-line-end="36">Filtering should be via query parameters.</li>
+<li class="has-line-data" data-line-start="36" data-line-end="38">API should remain <strong>open (no authentication)</strong> for simplicity.</li>
+</ul>
+<h3 class="code-line" data-line-start=38 data-line-end=39 ><a id="3_Dockerization_38"></a>3. Dockerization</h3>
+<ul>
+<li class="has-line-data" data-line-start="39" data-line-end="40">Use Docker to run both the database and the Laravel API service.</li>
+<li class="has-line-data" data-line-start="40" data-line-end="42">Provide a <code>docker-compose.yml</code> to start the full environment in one command.</li>
+</ul>
+<h3 class="code-line" data-line-start=42 data-line-end=43 ><a id="4_Documentation_42"></a>4. Documentation</h3>
+<ul>
+<li class="has-line-data" data-line-start="43" data-line-end="49">Include a <code>README.md</code> with:
+<ul>
+<li class="has-line-data" data-line-start="44" data-line-end="45">How to set up the project locally</li>
+<li class="has-line-data" data-line-start="45" data-line-end="46">How to run the migration &amp; import scripts</li>
+<li class="has-line-data" data-line-start="46" data-line-end="47">How to start the API using Docker</li>
+<li class="has-line-data" data-line-start="47" data-line-end="49">Example API calls (e.g., using <code>curl</code> or Postman)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 class="code-line" data-line-start=51 data-line-end=52 ><a id="Additional_Notes_51"></a>Additional Notes</h2>
+<ul>
+<li class="has-line-data" data-line-start="52" data-line-end="53">Using <strong>AI tools (e.g., ChatGPT, Copilot)</strong> is allowed.</li>
+<li class="has-line-data" data-line-start="53" data-line-end="54">Code should follow Laravel best practices for structure, naming, and error handling.</li>
+<li class="has-line-data" data-line-start="54" data-line-end="58">Bonus points for:
+<ul>
+<li class="has-line-data" data-line-start="55" data-line-end="56">Using Laravel Resource classes for API responses</li>
+<li class="has-line-data" data-line-start="56" data-line-end="58">Adding unit tests for at least one endpoint</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 class="code-line" data-line-start=60 data-line-end=61 ><a id="Expected_Delivery_60"></a>Expected Delivery</h2>
+<ul>
+<li class="has-line-data" data-line-start="61" data-line-end="62">GitHub repository with all source code, Docker files, and README.</li>
+<li class="has-line-data" data-line-start="62" data-line-end="64">Be ready to <strong>discuss the solution with Ruben</strong> after submission.</li>
+</ul>
+
+</body></html>
