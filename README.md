@@ -103,7 +103,7 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `per_page` - Items per page (max 100)
 
 ### Users
-- `GET /api/users` - List users with their reviewed movies
+- `GET /api/users` - List users with their reviewed movies (limited to 10 most recently reviewed per user by default)
 - `GET /api/users/{id}` - Get user details with reviews and movies
 
 **Query Parameters for Users:**
@@ -116,6 +116,8 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `primary_device` - Filter by primary device (partial match)
 - `household_size_min` - Minimum household size filter
 - `household_size_max` - Maximum household size filter
+- `exclude_reviewed_movies` - Exclude reviewed movies for better performance (true/false)
+- `show_all_reviewed_movies` - Show all reviewed movies per user (no 10-movie limit) (true/false)
 - `sort_by` - Sort by field (user_id, age, subscription_start_date, monthly_spend, household_size)
 - `sort_order` - Sort order (asc, desc)
 - `page` - Page number

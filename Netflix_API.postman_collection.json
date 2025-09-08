@@ -178,12 +178,12 @@
 			"name": "Users",
 			"item": [
 				{
-					"name": "List Users",
+					"name": "List Users with Reviewed Movies",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/users?page=1&per_page=10",
+							"raw": "{{base_url}}/api/users?page=1&per_page=5",
 							"host": [
 								"{{base_url}}"
 							],
@@ -198,7 +198,63 @@
 								},
 								{
 									"key": "per_page",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Users (Performance Mode)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users?exclude_reviewed_movies=true&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "exclude_reviewed_movies",
+									"value": "true"
+								},
+								{
+									"key": "per_page",
 									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Users with All Reviewed Movies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users?show_all_reviewed_movies=true&per_page=2",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "show_all_reviewed_movies",
+									"value": "true"
+								},
+								{
+									"key": "per_page",
+									"value": "2"
 								}
 							]
 						}
