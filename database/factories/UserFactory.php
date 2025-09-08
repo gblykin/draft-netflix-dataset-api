@@ -22,11 +22,11 @@ class UserFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'age' => $this->faker->numberBetween(18, 80),
-            'gender' => $this->faker->randomElement(['Male', 'Female', 'Prefer not to say', 'Other']),
+            'gender' => $this->faker->randomElement(['Male', 'Female', 'Prefer not to say', 'Other', '']),
             'country' => $this->faker->country(),
             'state_province' => $this->faker->state(),
             'city' => $this->faker->city(),
-            'subscription_plan' => $this->faker->randomElement(['Basic', 'Standard', 'Premium']),
+            'subscription_plan' => $this->faker->randomElement(['Basic', 'Standard', 'Premium', 'Premium+']),
             'subscription_start_date' => $this->faker->dateTimeBetween('-2 years', 'now'),
             'is_active' => $this->faker->boolean(80), // 80% chance of being active
             'monthly_spend' => $this->faker->randomFloat(2, 0, 50),
