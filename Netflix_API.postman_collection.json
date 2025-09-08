@@ -38,12 +38,12 @@
 					"response": []
 				},
 				{
-					"name": "List Movies - Filter by Genre",
+					"name": "List Movies - Filter by Genre (Sci-Fi)",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/movies?genre_primary=Action&release_year=2023",
+							"raw": "{{base_url}}/api/movies?genre=Sci-Fi&release_year=2017",
 							"host": [
 								"{{base_url}}"
 							],
@@ -53,12 +53,40 @@
 							],
 							"query": [
 								{
-									"key": "genre_primary",
-									"value": "Action"
+									"key": "genre",
+									"value": "Sci-Fi"
 								},
 								{
 									"key": "release_year",
-									"value": "2023"
+									"value": "2017"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Movies - Filter by Content Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/movies?content_type=Movie&is_netflix_original=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"movies"
+							],
+							"query": [
+								{
+									"key": "content_type",
+									"value": "Movie"
+								},
+								{
+									"key": "is_netflix_original",
+									"value": "true"
 								}
 							]
 						}
@@ -91,6 +119,34 @@
 								{
 									"key": "per_page",
 									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Movies - Filter by Country and Language",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/movies?country_of_origin=USA&language=English",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"movies"
+							],
+							"query": [
+								{
+									"key": "country_of_origin",
+									"value": "USA"
+								},
+								{
+									"key": "language",
+									"value": "English"
 								}
 							]
 						}
@@ -150,12 +206,12 @@
 					"response": []
 				},
 				{
-					"name": "List Users - Filter by Country",
+					"name": "List Users - Filter by Country and Plan",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/api/users?country=USA&subscription_plan=Premium",
+							"raw": "{{base_url}}/api/users?country=Usa&subscription_plan=Premium",
 							"host": [
 								"{{base_url}}"
 							],
@@ -166,11 +222,39 @@
 							"query": [
 								{
 									"key": "country",
-									"value": "USA"
+									"value": "Usa"
 								},
 								{
 									"key": "subscription_plan",
 									"value": "Premium"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Users - Filter by Active Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users?is_active=true&primary_device=Mobile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "is_active",
+									"value": "true"
+								},
+								{
+									"key": "primary_device",
+									"value": "Mobile"
 								}
 							]
 						}
@@ -258,7 +342,7 @@
 					"response": []
 				},
 				{
-					"name": "List Reviews - Filter by Rating",
+					"name": "List Reviews - Filter by High Rating",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -279,6 +363,34 @@
 								{
 									"key": "rating_max",
 									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Reviews - Filter by Device Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews?device_type=Mobile&is_verified_watch=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "device_type",
+									"value": "Mobile"
+								},
+								{
+									"key": "is_verified_watch",
+									"value": "true"
 								}
 							]
 						}
@@ -340,7 +452,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"review_id\": \"new_review_123\",\n  \"user_id\": \"{{user_id}}\",\n  \"movie_id\": \"{{movie_id}}\",\n  \"rating\": 5,\n  \"review_text\": \"Excellent movie! Highly recommended.\",\n  \"review_date\": \"2024-01-15\",\n  \"device_type\": \"Mobile\",\n  \"is_verified_watch\": true,\n  \"helpful_votes\": 0,\n  \"total_votes\": 0,\n  \"sentiment\": \"Positive\",\n  \"sentiment_score\": 0.8\n}"
+							"raw": "{\n  \"review_id\": \"new_review_test\",\n  \"user_id\": \"{{user_id}}\",\n  \"movie_id\": \"{{movie_id}}\",\n  \"rating\": 5,\n  \"review_text\": \"Excellent movie! Highly recommended.\",\n  \"review_date\": \"2024-01-15\",\n  \"device_type\": \"Mobile\",\n  \"is_verified_watch\": true,\n  \"helpful_votes\": 0,\n  \"total_votes\": 0,\n  \"sentiment\": \"Positive\",\n  \"sentiment_score\": 0.8\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/reviews",
@@ -433,17 +545,17 @@
 		},
 		{
 			"key": "movie_id",
-			"value": "movie_123",
+			"value": "movie_0001",
 			"type": "string"
 		},
 		{
 			"key": "user_id",
-			"value": "user_456",
+			"value": "user_00001",
 			"type": "string"
 		},
 		{
 			"key": "review_id",
-			"value": "review_789",
+			"value": "review_000001",
 			"type": "string"
 		}
 	]
