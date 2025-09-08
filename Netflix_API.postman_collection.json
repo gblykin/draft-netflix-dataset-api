@@ -1,0 +1,450 @@
+{
+	"info": {
+		"_postman_id": "netflix-api-collection",
+		"name": "Netflix Dataset REST API",
+		"description": "Complete API collection for the Netflix Dataset REST API built with Laravel",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Movies",
+			"item": [
+				{
+					"name": "List Movies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/movies?page=1&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"movies"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Movies - Filter by Genre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/movies?genre_primary=Action&release_year=2023",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"movies"
+							],
+							"query": [
+								{
+									"key": "genre_primary",
+									"value": "Action"
+								},
+								{
+									"key": "release_year",
+									"value": "2023"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Movies - Sort by Release Year",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/movies?sort_by=release_year&sort_order=desc&per_page=5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"movies"
+							],
+							"query": [
+								{
+									"key": "sort_by",
+									"value": "release_year"
+								},
+								{
+									"key": "sort_order",
+									"value": "desc"
+								},
+								{
+									"key": "per_page",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Movie Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/movies/{{movie_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"movies",
+								"{{movie_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users?page=1&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Users - Filter by Country",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users?country=USA&subscription_plan=Premium",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "USA"
+								},
+								{
+									"key": "subscription_plan",
+									"value": "Premium"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Users - Age Range Filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users?age_min=25&age_max=35",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "age_min",
+									"value": "25"
+								},
+								{
+									"key": "age_max",
+									"value": "35"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users/{{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "List Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews?page=1&per_page=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Reviews - Filter by Rating",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews?rating_min=4&rating_max=5",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "rating_min",
+									"value": "4"
+								},
+								{
+									"key": "rating_max",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Reviews - Filter by User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews?user_id={{user_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Review Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews/{{review_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reviews",
+								"{{review_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"review_id\": \"new_review_123\",\n  \"user_id\": \"{{user_id}}\",\n  \"movie_id\": \"{{movie_id}}\",\n  \"rating\": 5,\n  \"review_text\": \"Excellent movie! Highly recommended.\",\n  \"review_date\": \"2024-01-15\",\n  \"device_type\": \"Mobile\",\n  \"is_verified_watch\": true,\n  \"helpful_votes\": 0,\n  \"total_votes\": 0,\n  \"sentiment\": \"Positive\",\n  \"sentiment_score\": 0.8\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reviews",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"rating\": 4,\n  \"review_text\": \"Good movie, but not perfect. Still enjoyable.\",\n  \"helpful_votes\": 5,\n  \"total_votes\": 8,\n  \"sentiment\": \"Positive\",\n  \"sentiment_score\": 0.6\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reviews/{{review_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reviews",
+								"{{review_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews/{{review_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reviews",
+								"{{review_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "movie_id",
+			"value": "movie_123",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "user_456",
+			"type": "string"
+		},
+		{
+			"key": "review_id",
+			"value": "review_789",
+			"type": "string"
+		}
+	]
+}

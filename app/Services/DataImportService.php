@@ -11,71 +11,59 @@ class DataImportService
     private DataReaderInterface $reader;
     private DataWriterInterface $writer;
     private DataTransformerInterface $transformer;
-    private array $stats = [];
-    private array $errors = [];
+    private ImportProgressReporter $progressReporter;
+    private ImportLogger $logger;
 
     public function __construct(
         DataReaderInterface $reader,
         DataWriterInterface $writer,
-        DataTransformerInterface $transformer
+        DataTransformerInterface $transformer,
+        ImportProgressReporter $progressReporter = null,
+        ImportLogger $logger = null
     ) {
         $this->reader = $reader;
         $this->writer = $writer;
         $this->transformer = $transformer;
-        $this->initializeStats();
+        $this->progressReporter = $progressReporter ?? new ImportProgressReporter();
+        $this->logger = $logger ?? new ImportLogger();
     }
 
     public function import(): array
     {
-        $this->initializeStats();
+        $this->progressReporter->initializeStats();
         
-        // Log import start to import log
-        \Log::channel('import')->info("Import started", [
-            'file_info' => [
-                'total_records' => $this->reader->getRecordCount(),
-                'headers' => $this->reader->getHeaders()
-            ],
-            'timestamp' => now()->toISOString()
-        ]);
+        // Log import start
+        $this->logger->logImportStart(
+            $this->reader->getRecordCount(),
+            $this->reader->getHeaders()
+        );
         
         try {
             $this->writer->beginTransaction();
             
             $headers = $this->reader->getHeaders();
-            $this->stats['headers'] = $headers;
             
             foreach ($this->reader->read() as $index => $rawData) {
                 $this->processRecord($rawData, $headers, $index);
                 
-                // Progress reporting
-                if (($index + 1) % 1000 === 0) {
-                    $this->reportProgress($index + 1);
+                // Progress reporting using the new service
+                if ($this->progressReporter->shouldReportProgress($index + 1)) {
+                    $this->progressReporter->reportProgress($index + 1);
                 }
             }
             
             $this->writer->finalize();
             $this->writer->commit();
             
-            $this->stats['status'] = 'completed';
+            $this->progressReporter->setStatus('completed');
             
-            // Log import summary to import log
-            \Log::channel('import')->info("Import completed", [
-                'summary' => [
-                    'total_processed' => $this->stats['total_processed'],
-                    'successful' => $this->stats['successful'],
-                    'failed' => $this->stats['failed'],
-                    'success_rate' => $this->stats['total_processed'] > 0 ? 
-                        round(($this->stats['successful'] / $this->stats['total_processed']) * 100, 2) : 0,
-                    'duration_seconds' => now()->diffInSeconds($this->stats['started_at']),
-                    'status' => $this->stats['status']
-                ],
-                'timestamp' => now()->toISOString()
-            ]);
+            // Log import summary
+            $this->logger->logImportCompleted($this->getImportSummary());
             
         } catch (\Exception $e) {
             $this->writer->rollback();
-            $this->stats['status'] = 'failed';
-            $this->stats['error'] = $e->getMessage();
+            $this->progressReporter->setStatus('failed');
+            $this->progressReporter->setError($e->getMessage());
             throw $e;
         } finally {
             $this->reader->close();
@@ -86,18 +74,18 @@ class DataImportService
 
     public function getStats(): array
     {
-        return $this->stats;
+        return $this->progressReporter->getStats();
     }
 
     public function getErrors(): array
     {
-        return $this->errors;
+        return $this->progressReporter->getStats()['errors'] ?? [];
     }
 
     private function processRecord(array $rawData, array $headers, int $index): void
     {
         try {
-            $this->stats['total_processed']++;
+            $this->progressReporter->recordProcessed();
             
             // Transform the data
             $transformedData = $this->transformer->transform($rawData, $headers);
@@ -105,93 +93,43 @@ class DataImportService
             // Validate the transformed data
             if (!$this->transformer->validate($transformedData)) {
                 $validationErrors = $this->transformer->getValidationErrors();
-                $this->recordError($index, 'Validation failed', $validationErrors);
+                $this->progressReporter->recordFailure('Validation failed: ' . implode(', ', $validationErrors));
                 
-                // Log validation errors to import log
-                \Log::channel('import')->warning("Validation failed for record", [
-                    'row' => $index + 1,
-                    'errors' => $validationErrors,
-                    'raw_data' => $rawData,
-                    'transformed_data' => $transformedData,
-                    'timestamp' => now()->toISOString()
-                ]);
+                // Log validation errors using the new logger
+                $this->logger->logValidationError($index + 1, $validationErrors, $rawData, $transformedData);
                 return;
             }
             
             // Write the data
             if ($this->writer->writeRecord($transformedData)) {
-                $this->stats['successful']++;
+                $this->progressReporter->recordSuccess();
             } else {
-                $this->recordError($index, 'Write failed', ['Could not write record to destination']);
+                $this->progressReporter->recordFailure('Write failed: Could not write record to destination');
                 
-                // Log write failures to import log
-                \Log::channel('import')->error("Write failed for record", [
-                    'row' => $index + 1,
-                    'transformed_data' => $transformedData,
-                    'timestamp' => now()->toISOString()
-                ]);
+                // Log write failures using the new logger
+                $this->logger->logWriteError($index + 1, $transformedData);
             }
             
         } catch (\Exception $e) {
-            $this->recordError($index, 'Processing error', [$e->getMessage()]);
+            $this->progressReporter->recordFailure('Processing error: ' . $e->getMessage());
             
-            // Log processing errors to import log
-            \Log::channel('import')->error("Processing error for record", [
-                'row' => $index + 1,
-                'error' => $e->getMessage(),
-                'raw_data' => $rawData,
-                'timestamp' => now()->toISOString()
-            ]);
+            // Log processing errors using the new logger
+            $this->logger->logProcessingError($index + 1, $e->getMessage(), $rawData);
         }
-    }
-
-    private function recordError(int $index, string $type, array $details): void
-    {
-        $this->stats['failed']++;
-        $this->errors[] = [
-            'row' => $index + 1, // 1-based for user display
-            'type' => $type,
-            'details' => $details,
-        ];
-        
-        // Limit error storage to prevent memory issues
-        if (count($this->errors) > 1000) {
-            array_shift($this->errors);
-            $this->stats['errors_truncated'] = true;
-        }
-    }
-
-    private function reportProgress(int $processed): void
-    {
-        $total = $this->reader->getRecordCount();
-        $percentage = $total ? round(($processed / $total) * 100, 1) : 0;
-        
-        echo "Processed {$processed}" . ($total ? " of {$total} ({$percentage}%)" : '') . " records...\n";
-    }
-
-    private function initializeStats(): void
-    {
-        $this->stats = [
-            'total_processed' => 0,
-            'successful' => 0,
-            'failed' => 0,
-            'status' => 'in_progress',
-            'started_at' => now(),
-            'headers' => [],
-            'errors_truncated' => false,
-        ];
-        $this->errors = [];
     }
 
     private function getImportSummary(): array
     {
-        $this->stats['completed_at'] = now();
-        $this->stats['duration'] = $this->stats['completed_at']->diffInSeconds($this->stats['started_at']);
+        $stats = $this->progressReporter->getStats();
+        $stats['duration_seconds'] = now()->diffInSeconds($stats['started_at']);
+        $stats['success_rate'] = $stats['total_processed'] > 0 
+            ? round(($stats['successful'] / $stats['total_processed']) * 100, 2) 
+            : 0;
         
         return [
-            'stats' => $this->stats,
-            'errors' => $this->errors,
-            'success' => $this->stats['status'] === 'completed' && $this->stats['failed'] === 0,
+            'stats' => $stats,
+            'errors' => $this->getErrors(),
+            'success' => $stats['status'] === 'completed' && $stats['failed'] === 0,
         ];
     }
 }

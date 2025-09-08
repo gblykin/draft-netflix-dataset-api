@@ -1,0 +1,37 @@
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ */
+class UserFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'user_id' => $this->faker->unique()->uuid(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'age' => $this->faker->numberBetween(18, 80),
+            'gender' => $this->faker->randomElement(['Male', 'Female', 'Prefer not to say', 'Other']),
+            'country' => $this->faker->country(),
+            'state_province' => $this->faker->state(),
+            'city' => $this->faker->city(),
+            'subscription_plan' => $this->faker->randomElement(['Basic', 'Standard', 'Premium']),
+            'subscription_start_date' => $this->faker->dateTimeBetween('-2 years', 'now'),
+            'is_active' => $this->faker->boolean(80), // 80% chance of being active
+            'monthly_spend' => $this->faker->randomFloat(2, 0, 50),
+            'primary_device' => $this->faker->randomElement(['Mobile', 'TV', 'Computer', 'Tablet']),
+            'household_size' => $this->faker->numberBetween(1, 6),
+        ];
+    }
+}

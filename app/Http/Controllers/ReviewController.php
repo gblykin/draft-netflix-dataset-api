@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Review;
 use App\Http\Resources\ReviewResource;
+use App\Services\ReviewService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
@@ -11,46 +11,16 @@ use Illuminate\Validation\ValidationException;
 
 class ReviewController extends Controller
 {
+    public function __construct(
+        private ReviewService $reviewService
+    ) {}
+
     /**
      * Display a listing of reviews.
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Review::query();
-
-        // Apply filters
-        if ($request->has('user_id')) {
-            $query->where('user_id', $request->input('user_id'));
-        }
-
-        if ($request->has('movie_id')) {
-            $query->where('movie_id', $request->input('movie_id'));
-        }
-
-        if ($request->has('rating')) {
-            $query->where('rating', $request->input('rating'));
-        }
-
-        if ($request->has('rating_min')) {
-            $query->where('rating', '>=', $request->input('rating_min'));
-        }
-
-        if ($request->has('rating_max')) {
-            $query->where('rating', '<=', $request->input('rating_max'));
-        }
-
-        // Apply sorting
-        $sortBy = $request->input('sort_by', 'review_date');
-        $sortOrder = $request->input('sort_order', 'desc');
-        
-        if (in_array($sortBy, ['review_date', 'rating', 'helpfulness'])) {
-            $query->orderBy($sortBy, $sortOrder);
-        }
-
-        // Pagination
-        $perPage = min($request->input('per_page', 15), 100); // Max 100 items per page
-        $reviews = $query->with(['user', 'movie'])->paginate($perPage);
-
+        $reviews = $this->reviewService->getFilteredReviews($request);
         return ReviewResource::collection($reviews);
     }
 
@@ -59,11 +29,7 @@ class ReviewController extends Controller
      */
     public function show(string $id): ReviewResource
     {
-        $review = Review::with(['user', 'movie'])
-            ->where('review_id', $id)
-            ->orWhere('id', $id)
-            ->firstOrFail();
-
+        $review = $this->reviewService->getReviewById($id);
         return new ReviewResource($review);
     }
 
@@ -83,9 +49,7 @@ class ReviewController extends Controller
                 'helpfulness' => 'nullable|integer|min:0',
             ]);
 
-            $review = Review::create($validated);
-            $review->load(['user', 'movie']);
-
+            $review = $this->reviewService->createReview($validated);
             return new ReviewResource($review);
         } catch (ValidationException $e) {
             return response()->json([
@@ -101,19 +65,13 @@ class ReviewController extends Controller
     public function update(Request $request, string $id): ReviewResource|JsonResponse
     {
         try {
-            $review = Review::where('review_id', $id)
-                ->orWhere('id', $id)
-                ->firstOrFail();
-
             $validated = $request->validate([
                 'rating' => 'sometimes|integer|min:1|max:5',
                 'review_text' => 'sometimes|nullable|string|max:2000',
                 'helpfulness' => 'sometimes|integer|min:0',
             ]);
 
-            $review->update($validated);
-            $review->load(['user', 'movie']);
-
+            $review = $this->reviewService->updateReview($id, $validated);
             return new ReviewResource($review);
         } catch (ValidationException $e) {
             return response()->json([
@@ -128,15 +86,10 @@ class ReviewController extends Controller
      */
     public function destroy(string $id): JsonResponse
     {
-        $review = Review::where('review_id', $id)
-            ->orWhere('id', $id)
-            ->firstOrFail();
-
-        $review->delete();
+        $this->reviewService->deleteReview($id);
 
         return response()->json([
             'message' => 'Review deleted successfully'
         ], 200);
     }
 }
-

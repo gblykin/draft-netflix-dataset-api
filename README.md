@@ -120,6 +120,7 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `PUT /api/reviews/{id}` - Update a review
 - `DELETE /api/reviews/{id}` - Delete a review
 
+
 **Query Parameters for Reviews:**
 - `user_id` - Filter by user ID
 - `movie_id` - Filter by movie ID
@@ -130,6 +131,21 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `sort_order` - Sort order (asc, desc)
 - `page` - Page number
 - `per_page` - Items per page (max 100)
+
+
+## 📮 Postman Collection
+
+For easy API testing, import the provided Postman collection:
+
+1. **Download**: `Netflix_API.postman_collection.json` (included in the project)
+2. **Import**: Open Postman → Import → Select the collection file
+3. **Configure**: Set the `base_url` variable to `http://localhost:8000`
+4. **Test**: Use the pre-configured requests for all endpoints
+
+The collection includes:
+- All CRUD operations for movies, users, and reviews
+- Filtering and pagination examples
+- Pre-configured variables for easy testing
 
 ## 🛠️ Example API Calls
 
@@ -187,6 +203,7 @@ curl -X PUT "http://localhost:8000/api/reviews/review_123" \
 ```bash
 curl -X DELETE "http://localhost:8000/api/reviews/review_123"
 ```
+
 
 ## 🧪 Testing
 
@@ -279,10 +296,14 @@ docker-compose exec app php artisan route:list
 
 ### Bonus Features
 - ✅ Laravel Resource classes for API responses
-- ✅ Unit tests for API endpoints
+- ✅ Unit tests for API endpoints (33 tests, 120 assertions)
 - ✅ Advanced filtering and sorting options
 - ✅ Error handling and validation
 - ✅ Clean, maintainable code structure
+- ✅ **NEW**: Database indexes for performance optimization
+- ✅ **NEW**: Postman collection for easy API testing
+- ✅ **NEW**: SOLID principles implementation
+- ✅ **NEW**: Comprehensive import logging system
 
 ## 🚨 Error Handling
 
