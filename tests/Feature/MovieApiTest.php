@@ -77,6 +77,7 @@ class MovieApiTest extends TestCase
             'monthly_spend' => 15.99,
             'primary_device' => 'Mobile',
             'household_size' => 1,
+            'source_created_at' => '2023-01-01 10:00:00',
         ]);
 
         // Create test review

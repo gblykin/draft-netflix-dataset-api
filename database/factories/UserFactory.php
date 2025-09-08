@@ -22,7 +22,7 @@ class UserFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'age' => $this->faker->numberBetween(18, 80),
-            'gender' => $this->faker->randomElement(['Male', 'Female', 'Prefer not to say', 'Other', '']),
+            'gender' => $this->faker->randomElement(['Male', 'Female', 'Prefer not to say', 'Other', null]),
             'country' => $this->faker->country(),
             'state_province' => $this->faker->state(),
             'city' => $this->faker->city(),
@@ -32,6 +32,7 @@ class UserFactory extends Factory
             'monthly_spend' => $this->faker->randomFloat(2, 0, 50),
             'primary_device' => $this->faker->randomElement(['Mobile', 'TV', 'Computer', 'Tablet']),
             'household_size' => $this->faker->numberBetween(1, 6),
+            'source_created_at' => $this->faker->dateTimeBetween('-3 years', '-1 month'),
         ];
     }
 }

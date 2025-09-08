@@ -27,6 +27,7 @@ class User extends Model
         'monthly_spend',
         'primary_device',
         'household_size',
+        'source_created_at',
     ];
 
     protected $casts = [
@@ -36,6 +37,7 @@ class User extends Model
         'household_size' => 'integer',
         'age' => 'integer',
         'gender' => 'string',
+        'source_created_at' => 'datetime',
     ];
 
     protected $attributes = [

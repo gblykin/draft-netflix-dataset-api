@@ -32,6 +32,7 @@ class UserServiceTest extends TestCase
             'city' => 'New York',
             'subscription_plan' => 'Basic',
             'subscription_start_date' => now()->toDateString(),
+            'source_created_at' => now()->subMonths(6),
         ];
 
         return User::create(array_merge($defaults, $overrides));

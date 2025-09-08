@@ -32,6 +32,7 @@ class UserResource extends JsonResource
             'monthly_spend' => $this->monthly_spend,
             'primary_device' => $this->primary_device,
             'household_size' => $this->household_size,
+            'source_created_at' => $this->source_created_at?->format('Y-m-d H:i:s'),
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'reviewed_movies' => MovieResource::collection($this->whenLoaded('reviewedMovies')),
             'created_at' => $this->created_at,

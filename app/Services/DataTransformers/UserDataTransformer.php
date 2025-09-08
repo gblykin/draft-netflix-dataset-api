@@ -22,6 +22,7 @@ class UserDataTransformer extends BaseDataTransformer
             'monthly_spend' => ['monthly_spend'],
             'primary_device' => ['primary_device'],
             'household_size' => ['household_size'],
+            'source_created_at' => ['created_at'],
         ];
     }
 
