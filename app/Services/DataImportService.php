@@ -90,6 +90,11 @@ class DataImportService
             // Transform the data
             $transformedData = $this->transformer->transform($rawData, $headers);
             
+            // Special handling for reviews - transform external IDs to internal IDs
+            if ($this->transformer instanceof \App\Services\DataTransformers\ReviewDataTransformer) {
+                $transformedData = $this->transformer->transformExternalIds($transformedData);
+            }
+            
             // Validate the transformed data
             if (!$this->transformer->validate($transformedData)) {
                 $validationErrors = $this->transformer->getValidationErrors();

@@ -7,8 +7,8 @@ class UserDataTransformer extends BaseDataTransformer
     protected function getColumnMapping(): array
     {
         return [
-            'user_id' => ['user_id'],
-            'email' => ['email'],
+            'external_user_id' => 'user_id',
+            'email' => 'email',
             'first_name' => ['first_name'],
             'last_name' => ['last_name'],
             'age' => ['age'],
@@ -31,7 +31,7 @@ class UserDataTransformer extends BaseDataTransformer
         $this->validationErrors = [];
 
         // Required fields validation
-        $requiredFields = ['user_id', 'email', 'first_name', 'last_name', 'country', 'city', 'subscription_plan'];
+        $requiredFields = ['external_user_id', 'email', 'first_name', 'last_name', 'country', 'city', 'subscription_plan'];
         $this->validateRequiredFields($data, $requiredFields);
 
         // Age validation (optional but if present must be valid)

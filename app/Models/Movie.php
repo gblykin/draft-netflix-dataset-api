@@ -12,7 +12,7 @@ class Movie extends Model
     use HasFactory;
 
     protected $fillable = [
-        'movie_id',
+        'external_movie_id',
         'title',
         'content_type',
         'genre_primary',
@@ -49,7 +49,7 @@ class Movie extends Model
      */
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class, 'movie_id', 'movie_id');
+        return $this->hasMany(Review::class);
     }
 
     /**

@@ -10,10 +10,10 @@ use Illuminate\Validation\ValidationException;
 
 class ReviewService
 {
-    public function getFilteredReviews(Request $request): LengthAwarePaginator
+    public function getFilteredReviews(array $filters = []): LengthAwarePaginator
     {
         $query = Review::query();
-        $filterService = new ReviewFilterService($query, $request);
+        $filterService = new ReviewFilterService($query, $filters);
         
         return $filterService->apply();
     }
@@ -21,7 +21,7 @@ class ReviewService
     public function getReviewById(string $id): Review
     {
         return Review::with(['user', 'movie'])
-            ->where('review_id', $id)
+            ->where('external_review_id', $id)
             ->orWhere('id', $id)
             ->firstOrFail();
     }
@@ -35,7 +35,7 @@ class ReviewService
 
     public function updateReview(string $id, array $data): Review
     {
-        $review = Review::where('review_id', $id)
+        $review = Review::where('external_review_id', $id)
             ->orWhere('id', $id)
             ->firstOrFail();
 
@@ -46,7 +46,7 @@ class ReviewService
 
     public function deleteReview(string $id): bool
     {
-        $review = Review::where('review_id', $id)
+        $review = Review::where('external_review_id', $id)
             ->orWhere('id', $id)
             ->firstOrFail();
 

@@ -9,50 +9,50 @@ class UserFilterService extends BaseFilterService
 {
     protected function applyFilters(): void
     {
-        if ($this->request->has('subscription_plan')) {
-            $this->query->where('subscription_plan', $this->request->input('subscription_plan'));
+        if (isset($this->filters['subscription_plan'])) {
+            $this->query->where('subscription_plan', $this->filters['subscription_plan']);
         }
 
-        if ($this->request->has('country')) {
-            $this->query->where('country', 'like', '%' . $this->request->input('country') . '%');
+        if (isset($this->filters['country'])) {
+            $this->query->where('country', 'like', '%' . $this->filters['country'] . '%');
         }
 
-        if ($this->request->has('gender')) {
-            $this->query->where('gender', $this->request->input('gender'));
+        if (isset($this->filters['gender'])) {
+            $this->query->where('gender', $this->filters['gender']);
         }
 
-        if ($this->request->has('age_min')) {
-            $this->query->where('age', '>=', $this->request->input('age_min'));
+        if (isset($this->filters['age_min'])) {
+            $this->query->where('age', '>=', $this->filters['age_min']);
         }
 
-        if ($this->request->has('age_max')) {
-            $this->query->where('age', '<=', $this->request->input('age_max'));
+        if (isset($this->filters['age_max'])) {
+            $this->query->where('age', '<=', $this->filters['age_max']);
         }
 
-        if ($this->request->has('is_active')) {
-            $this->query->where('is_active', $this->request->boolean('is_active'));
+        if (isset($this->filters['is_active'])) {
+            $this->query->where('is_active', (bool) $this->filters['is_active']);
         }
 
-        if ($this->request->has('primary_device')) {
-            $this->query->where('primary_device', 'like', '%' . $this->request->input('primary_device') . '%');
+        if (isset($this->filters['primary_device'])) {
+            $this->query->where('primary_device', 'like', '%' . $this->filters['primary_device'] . '%');
         }
 
-        if ($this->request->has('household_size_min')) {
-            $this->query->where('household_size', '>=', $this->request->input('household_size_min'));
+        if (isset($this->filters['household_size_min'])) {
+            $this->query->where('household_size', '>=', $this->filters['household_size_min']);
         }
 
-        if ($this->request->has('household_size_max')) {
-            $this->query->where('household_size', '<=', $this->request->input('household_size_max'));
+        if (isset($this->filters['household_size_max'])) {
+            $this->query->where('household_size', '<=', $this->filters['household_size_max']);
         }
     }
 
     protected function getSortableFields(): array
     {
-        return ['user_id', 'age', 'subscription_start_date', 'monthly_spend', 'household_size'];
+        return ['external_user_id', 'age', 'subscription_start_date', 'monthly_spend', 'household_size'];
     }
 
     protected function getDefaultSortField(): string
     {
-        return 'user_id';
+        return 'external_user_id';
     }
 }

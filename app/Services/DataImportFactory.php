@@ -26,15 +26,15 @@ class DataImportFactory
     {
         return match (strtolower($entityType)) {
             'users' => [
-                new DatabaseWriter(User::class, 'email', true), // Use email as unique key to handle duplicates
+                new DatabaseWriter(User::class, 'external_user_id', true), // Use external_user_id as unique key
                 new UserDataTransformer(),
             ],
             'movies' => [
-                new DatabaseWriter(Movie::class, 'movie_id', true),
+                new DatabaseWriter(Movie::class, 'external_movie_id', true),
                 new MovieDataTransformer(),
             ],
             'reviews' => [
-                new DatabaseWriter(Review::class, 'review_id', true),
+                new DatabaseWriter(Review::class, 'external_review_id', true),
                 new ReviewDataTransformer(),
             ],
             default => throw new \InvalidArgumentException("Unsupported entity type: {$entityType}"),

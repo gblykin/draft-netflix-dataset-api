@@ -10,8 +10,8 @@ class MovieFilterService extends BaseFilterService
     protected function applyFilters(): void
     {
         // Support 'genre' parameter that searches both genre_primary and genre_secondary
-        if ($this->request->has('genre')) {
-            $genre = $this->request->input('genre');
+        if (isset($this->filters['genre'])) {
+            $genre = $this->filters['genre'];
             $this->query->where(function ($query) use ($genre) {
                 $query->where('genre_primary', 'like', '%' . $genre . '%')
                       ->orWhere('genre_secondary', 'like', '%' . $genre . '%');
@@ -19,36 +19,36 @@ class MovieFilterService extends BaseFilterService
         }
 
         // Support 'genre_primary' parameter for backward compatibility
-        if ($this->request->has('genre_primary')) {
-            $this->query->where('genre_primary', 'like', '%' . $this->request->input('genre_primary') . '%');
+        if (isset($this->filters['genre_primary'])) {
+            $this->query->where('genre_primary', 'like', '%' . $this->filters['genre_primary'] . '%');
         }
 
-        if ($this->request->has('genre_secondary')) {
-            $this->query->where('genre_secondary', 'like', '%' . $this->request->input('genre_secondary') . '%');
+        if (isset($this->filters['genre_secondary'])) {
+            $this->query->where('genre_secondary', 'like', '%' . $this->filters['genre_secondary'] . '%');
         }
 
-        if ($this->request->has('content_type')) {
-            $this->query->where('content_type', 'like', '%' . $this->request->input('content_type') . '%');
+        if (isset($this->filters['content_type'])) {
+            $this->query->where('content_type', 'like', '%' . $this->filters['content_type'] . '%');
         }
 
-        if ($this->request->has('release_year')) {
-            $this->query->where('release_year', $this->request->input('release_year'));
+        if (isset($this->filters['release_year'])) {
+            $this->query->where('release_year', $this->filters['release_year']);
         }
 
-        if ($this->request->has('rating')) {
-            $this->query->where('rating', $this->request->input('rating'));
+        if (isset($this->filters['rating'])) {
+            $this->query->where('rating', $this->filters['rating']);
         }
 
-        if ($this->request->has('country_of_origin')) {
-            $this->query->where('country_of_origin', 'like', '%' . $this->request->input('country_of_origin') . '%');
+        if (isset($this->filters['country_of_origin'])) {
+            $this->query->where('country_of_origin', 'like', '%' . $this->filters['country_of_origin'] . '%');
         }
 
-        if ($this->request->has('language')) {
-            $this->query->where('language', 'like', '%' . $this->request->input('language') . '%');
+        if (isset($this->filters['language'])) {
+            $this->query->where('language', 'like', '%' . $this->filters['language'] . '%');
         }
 
-        if ($this->request->has('is_netflix_original')) {
-            $this->query->where('is_netflix_original', $this->request->boolean('is_netflix_original'));
+        if (isset($this->filters['is_netflix_original'])) {
+            $this->query->where('is_netflix_original', (bool) $this->filters['is_netflix_original']);
         }
     }
 

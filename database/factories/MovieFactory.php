@@ -17,7 +17,7 @@ class MovieFactory extends Factory
     public function definition(): array
     {
         return [
-            'movie_id' => $this->faker->unique()->uuid(),
+            'external_movie_id' => $this->faker->unique()->uuid(),
             'title' => $this->faker->sentence(3),
             'content_type' => $this->faker->randomElement(['Movie', 'TV Show']),
             'genre_primary' => $this->faker->randomElement(['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi']),

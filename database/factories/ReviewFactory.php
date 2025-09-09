@@ -17,9 +17,9 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'review_id' => $this->faker->unique()->uuid(),
-            'user_id' => $this->faker->uuid(), // Will be overridden in tests
-            'movie_id' => $this->faker->uuid(), // Will be overridden in tests
+            'external_review_id' => $this->faker->unique()->uuid(),
+            'user_id' => \App\Models\User::factory(), // Will be overridden in tests
+            'movie_id' => \App\Models\Movie::factory(), // Will be overridden in tests
             'rating' => $this->faker->numberBetween(1, 5),
             'review_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'device_type' => $this->faker->randomElement(['Mobile', 'TV', 'Computer', 'Tablet']),

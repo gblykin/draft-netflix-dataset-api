@@ -9,10 +9,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class MovieService
 {
-    public function getFilteredMovies(Request $request): LengthAwarePaginator
+    public function getFilteredMovies(array $filters = []): LengthAwarePaginator
     {
         $query = Movie::query();
-        $filterService = new MovieFilterService($query, $request);
+        $filterService = new MovieFilterService($query, $filters);
         
         return $filterService->apply();
     }
@@ -20,7 +20,7 @@ class MovieService
     public function getMovieById(string $id): Movie
     {
         return Movie::with(['reviews.user', 'reviewers'])
-            ->where('movie_id', $id)
+            ->where('external_movie_id', $id)
             ->orWhere('id', $id)
             ->firstOrFail();
     }

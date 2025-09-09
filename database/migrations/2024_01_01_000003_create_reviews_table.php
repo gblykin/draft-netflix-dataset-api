@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('review_id')->unique();
-            $table->string('user_id');
-            $table->string('movie_id');
+            $table->string('external_review_id')->unique(); 
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('SET NULL');
+            $table->foreignId('movie_id')->constrained()->onDelete('CASCADE');
             $table->integer('rating'); // 1-5 stars
-            $table->date('review_date');
+            $table->date('review_date'); 
             $table->string('device_type');
             $table->boolean('is_verified_watch')->default(false);
             $table->integer('helpful_votes')->default(0);
@@ -26,14 +26,12 @@ return new class extends Migration
             $table->string('sentiment')->nullable(); // Positive, Negative, Neutral
             $table->decimal('sentiment_score', 5, 4)->nullable(); // -1.0 to 1.0
             $table->timestamps();
-            
-            // Foreign key constraints
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('movie_id')->references('movie_id')->on('movies')->onDelete('cascade');
-            
-            $table->index(['user_id', 'movie_id']);
-            $table->index(['rating', 'is_verified_watch']);
-            $table->index(['review_date', 'sentiment']);
+
+                        
+            $table->index('rating');
+            $table->index('is_verified_watch');
+            $table->index('review_date');
+            $table->index('sentiment');
             $table->index('device_type');
         });
     }

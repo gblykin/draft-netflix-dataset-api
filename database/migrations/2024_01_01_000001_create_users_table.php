@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id')->unique();
-            $table->string('email')->unique();
+            $table->string('external_user_id')->unique(); 
+            $table->string('email')->unique(); 
             $table->string('first_name');
             $table->string('last_name');
             $table->integer('age')->nullable();
@@ -28,6 +28,7 @@ return new class extends Migration
             $table->decimal('monthly_spend', 8, 2)->nullable()->default(0.00);
             $table->string('primary_device')->nullable();
             $table->integer('household_size')->nullable()->default(1);
+            $table->timestamp('source_created_at')->nullable();
             $table->timestamps();
             
             $table->index(['subscription_plan', 'country']);

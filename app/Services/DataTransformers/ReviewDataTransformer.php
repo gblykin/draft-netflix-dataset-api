@@ -2,14 +2,17 @@
 
 namespace App\Services\DataTransformers;
 
+use App\Models\User;
+use App\Models\Movie;
+
 class ReviewDataTransformer extends BaseDataTransformer
 {
     protected function getColumnMapping(): array
     {
         return [
-            'review_id' => 'review_id',
-            'user_id' => 'user_id',
-            'movie_id' => 'movie_id',
+            'external_review_id' => 'review_id',
+            'external_user_id' => 'user_id', // External ID from CSV
+            'external_movie_id' => 'movie_id', // External ID from CSV
             'rating' => 'rating',
             'review_date' => 'review_date',
             'device_type' => 'device_type',
@@ -29,9 +32,9 @@ class ReviewDataTransformer extends BaseDataTransformer
         }
 
         switch ($column) {
-            case 'review_id':
-            case 'user_id':
-            case 'movie_id':
+            case 'external_review_id':
+            case 'external_user_id':
+            case 'external_movie_id':
             case 'device_type':
             case 'review_text':
             case 'sentiment':
@@ -70,7 +73,7 @@ class ReviewDataTransformer extends BaseDataTransformer
         $this->validationErrors = [];
         
         // Required fields
-        $requiredFields = ['review_id', 'user_id', 'movie_id', 'rating', 'review_date', 'device_type'];
+        $requiredFields = ['external_review_id', 'external_user_id', 'external_movie_id', 'rating', 'review_date', 'device_type'];
         $this->validateRequiredFields($data, $requiredFields);
         
         // Validate rating
@@ -92,5 +95,33 @@ class ReviewDataTransformer extends BaseDataTransformer
         }
         
         return empty($this->validationErrors);
+    }
+
+    /**
+     * Transform external IDs to internal IDs for database storage
+     */
+    public function transformExternalIds(array $data): array
+    {
+        // Convert external_user_id to internal user_id
+        if (isset($data['external_user_id'])) {
+            $user = User::where('external_user_id', $data['external_user_id'])->first();
+            if ($user) {
+                $data['user_id'] = $user->id;
+            } else {
+                $this->validationErrors[] = "User with external ID '{$data['external_user_id']}' not found";
+            }
+        }
+
+        // Convert external_movie_id to internal movie_id
+        if (isset($data['external_movie_id'])) {
+            $movie = Movie::where('external_movie_id', $data['external_movie_id'])->first();
+            if ($movie) {
+                $data['movie_id'] = $movie->id;
+            } else {
+                $this->validationErrors[] = "Movie with external ID '{$data['external_movie_id']}' not found";
+            }
+        }
+
+        return $data;
     }
 }

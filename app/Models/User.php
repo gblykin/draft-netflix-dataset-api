@@ -12,7 +12,7 @@ class User extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'external_user_id',
         'email',
         'first_name',
         'last_name',
@@ -51,7 +51,7 @@ class User extends Model
      */
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class, 'user_id', 'user_id');
+        return $this->hasMany(Review::class);
     }
 
     /**
@@ -59,7 +59,7 @@ class User extends Model
      */
     public function reviewedMovies(): BelongsToMany
     {
-        return $this->belongsToMany(Movie::class, 'reviews', 'user_id', 'movie_id', 'user_id', 'movie_id')
+        return $this->belongsToMany(Movie::class, 'reviews', 'user_id', 'movie_id')
                     ->withPivot('rating', 'review_text', 'review_date', 'device_type', 'is_verified_watch', 'helpful_votes', 'total_votes', 'sentiment', 'sentiment_score')
                     ->withTimestamps();
     }

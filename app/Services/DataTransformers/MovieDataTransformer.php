@@ -7,7 +7,7 @@ class MovieDataTransformer extends BaseDataTransformer
     protected function getColumnMapping(): array
     {
         return [
-            'movie_id' => 'movie_id',
+            'external_movie_id' => 'movie_id',
             'title' => 'title',
             'content_type' => 'content_type',
             'genre_primary' => 'genre_primary',
@@ -35,7 +35,7 @@ class MovieDataTransformer extends BaseDataTransformer
         }
 
         switch ($column) {
-            case 'movie_id':
+            case 'external_movie_id':
             case 'title':
             case 'content_type':
             case 'genre_primary':
@@ -82,8 +82,8 @@ class MovieDataTransformer extends BaseDataTransformer
     {
         $this->validationErrors = [];
         
-        // Required fields
-        $requiredFields = ['movie_id', 'title', 'content_type', 'genre_primary', 'release_year', 'language', 'country_of_origin'];
+        // Required fields (using transformed field names for validation)
+        $requiredFields = ['external_movie_id', 'title', 'content_type', 'genre_primary', 'release_year', 'language', 'country_of_origin'];
         $this->validateRequiredFields($data, $requiredFields);
         
         // Validate release year

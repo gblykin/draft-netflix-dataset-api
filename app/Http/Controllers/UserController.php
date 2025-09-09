@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserListRequest;
 use App\Http\Resources\UserResource;
 use App\Services\UserService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
@@ -16,9 +16,10 @@ class UserController extends Controller
     /**
      * Display a listing of users with their reviewed movies.
      */
-    public function index(Request $request): AnonymousResourceCollection
-    {
-        $users = $this->userService->getFilteredUsers($request);
+    public function index(UserListRequest $request): AnonymousResourceCollection
+    { 
+        $requestData = $request->all();
+        $users = $this->userService->getFilteredUsers($requestData);
         return UserResource::collection($users);
     }
 

@@ -9,12 +9,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 abstract class BaseFilterService
 {
     protected Builder $query;
-    protected Request $request;
+    protected array $filters;
 
-    public function __construct(Builder $query, Request $request)
+    public function __construct(Builder $query, array $filters = [])
     {
         $this->query = $query;
-        $this->request = $request;
+        $this->filters = $filters;
     }
 
     public function apply(): LengthAwarePaginator
@@ -30,8 +30,8 @@ abstract class BaseFilterService
 
     protected function applySorting(): void
     {
-        $sortBy = $this->request->input('sort_by', $this->getDefaultSortField());
-        $sortOrder = $this->request->input('sort_order', 'asc');
+        $sortBy = $this->filters['sort_by'] ?? $this->getDefaultSortField();
+        $sortOrder = $this->filters['sort_order'] ?? 'asc';
         
         if (in_array($sortBy, $this->getSortableFields())) {
             $this->query->orderBy($sortBy, $sortOrder);
@@ -40,7 +40,7 @@ abstract class BaseFilterService
 
     protected function applyPagination(): LengthAwarePaginator
     {
-        $perPage = min($this->request->input('per_page', 15), 100);
+        $perPage = min($this->filters['per_page'] ?? 15, 100);
         return $this->query->paginate($perPage);
     }
 

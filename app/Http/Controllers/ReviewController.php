@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewListRequest;
 use App\Http\Resources\ReviewResource;
 use App\Services\ReviewService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Validation\ValidationException;
 
 class ReviewController extends Controller
@@ -18,9 +20,10 @@ class ReviewController extends Controller
     /**
      * Display a listing of reviews.
      */
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(ReviewListRequest $request): AnonymousResourceCollection
     {
-        $reviews = $this->reviewService->getFilteredReviews($request);
+        $requestData = $request->all();
+        $reviews = $this->reviewService->getFilteredReviews($requestData);
         return ReviewResource::collection($reviews);
     }
 
@@ -36,13 +39,13 @@ class ReviewController extends Controller
     /**
      * Store a newly created review.
      */
-    public function store(Request $request): ReviewResource|JsonResponse
+    public function store(Request $request): ReviewResource|JsonResource
     {
         try {
             $validated = $request->validate([
-                'review_id' => 'required|string|unique:reviews,review_id',
-                'user_id' => 'required|string|exists:users,user_id',
-                'movie_id' => 'required|string|exists:movies,movie_id',
+                'review_id' => 'required|integer|unique:reviews,review_id',
+                'user_id' => 'required|integer|exists:users,id',
+                'movie_id' => 'required|integer|exists:movies,id',
                 'rating' => 'required|integer|min:1|max:5',
                 'review_text' => 'nullable|string|max:2000',
                 'review_date' => 'required|date',
@@ -52,7 +55,7 @@ class ReviewController extends Controller
             $review = $this->reviewService->createReview($validated);
             return new ReviewResource($review);
         } catch (ValidationException $e) {
-            return response()->json([
+            return JsonResource::make([
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
