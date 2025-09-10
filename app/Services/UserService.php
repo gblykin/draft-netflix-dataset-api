@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\BooleanHelper;
 use App\Models\User;
 use App\Services\Filters\UserFilterService;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class UserService
         
         // Check if user wants to exclude reviewed movies for performance
         $excludeReviewedMovies = isset($filters['exclude_reviewed_movies']) && 
-            in_array($filters['exclude_reviewed_movies'], ['true', '1', 1, true], true);
+            BooleanHelper::convertToBoolean($filters['exclude_reviewed_movies']);
         
         if (!$excludeReviewedMovies) {
             $query->with(['reviewedMovies' => function ($query) use ($filters) {
@@ -24,7 +25,7 @@ class UserService
                 
                 // Limit reviewed movies per user unless user wants all movies
                 $showAllReviewedMovies = isset($filters['show_all_reviewed_movies']) && 
-                    in_array($filters['show_all_reviewed_movies'], ['true', '1', 1, true], true);
+                    BooleanHelper::convertToBoolean($filters['show_all_reviewed_movies']);
                 
                 if (!$showAllReviewedMovies) {
                     $query->limit(10);

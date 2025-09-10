@@ -2,8 +2,8 @@
 
 namespace App\Services\Filters;
 
+use App\Helpers\BooleanHelper;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class BaseFilterService
@@ -15,6 +15,15 @@ abstract class BaseFilterService
     {
         $this->query = $query;
         $this->filters = $filters;
+    }
+
+    /**
+     * Convert various boolean representations to actual boolean value.
+     * Supports: true, false, 1, 0, "true", "false", "1", "0"
+     */
+    protected function convertToBoolean($value): bool
+    {
+        return BooleanHelper::convertToBoolean($value);
     }
 
     public function apply(): LengthAwarePaginator
@@ -46,4 +55,3 @@ abstract class BaseFilterService
 
     abstract protected function getDefaultSortField(): string;
 }
-

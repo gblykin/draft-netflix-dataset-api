@@ -49,7 +49,7 @@ class MovieFilterService extends BaseFilterService
 
         if (isset($this->filters['is_netflix_original'])) {
             $value = $this->filters['is_netflix_original'];
-            $booleanValue = in_array($value, ['true', '1', 1, true], true);
+            $booleanValue = $this->convertToBoolean($value);
             $this->query->where('is_netflix_original', $booleanValue);
         }
     }
