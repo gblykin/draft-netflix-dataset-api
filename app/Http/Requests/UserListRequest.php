@@ -36,6 +36,7 @@ class UserListRequest extends FormRequest
             'city' => 'sometimes|string|max:255',
             'subscription_plan' => 'sometimes|string|in:basic,premium,family',
             'gender' => 'sometimes|string|in:male,female,other',
+            'is_active' => 'sometimes|in:true,false,1,0',
             'age_min' => 'sometimes|integer|min:0|max:120',
             'age_max' => 'sometimes|integer|min:0|max:120|gte:age_min',
             'household_size_min' => 'sometimes|integer|min:1|max:20',
@@ -48,9 +49,9 @@ class UserListRequest extends FormRequest
             'source_created_at_to' => 'sometimes|date|after_or_equal:source_created_at_from',
             
             // Review-related filters
-            'exclude_reviewed_movies' => 'sometimes|boolean',
-            'show_all_reviewed_movies' => 'sometimes|boolean',
-            'has_reviews' => 'sometimes|boolean',
+            'exclude_reviewed_movies' => 'sometimes|in:true,false,1,0',
+            'show_all_reviewed_movies' => 'sometimes|in:true,false,1,0',
+            'has_reviews' => 'sometimes|in:true,false,1,0',
             'min_reviews' => 'sometimes|integer|min:0',
             'max_reviews' => 'sometimes|integer|min:0|gte:min_reviews',
         ];

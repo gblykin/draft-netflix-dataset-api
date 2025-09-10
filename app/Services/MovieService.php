@@ -19,10 +19,15 @@ class MovieService
 
     public function getMovieById(string $id): Movie
     {
-        return Movie::with(['reviews.user', 'reviewers'])
-            ->where('external_movie_id', $id)
-            ->orWhere('id', $id)
-            ->firstOrFail();
+        $movie = Movie::with(['reviews.user'])
+            ->where('id', $id)
+            ->first();
+            
+        if (!$movie) {
+            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+        }
+        
+        return $movie;
     }
 }
 

@@ -27,7 +27,7 @@ class MovieServiceTest extends TestCase
     {
         // Create test movies directly
         Movie::create([
-            'movie_id' => 'test-movie-1',
+            'external_movie_id' => 'test-movie-1',
             'title' => 'Test Movie 1',
             'content_type' => 'Movie',
             'genre_primary' => 'Action',
@@ -36,7 +36,7 @@ class MovieServiceTest extends TestCase
             'country_of_origin' => 'USA',
         ]);
         Movie::create([
-            'movie_id' => 'test-movie-2',
+            'external_movie_id' => 'test-movie-2',
             'title' => 'Test Movie 2',
             'content_type' => 'Movie',
             'genre_primary' => 'Comedy',
@@ -45,8 +45,7 @@ class MovieServiceTest extends TestCase
             'country_of_origin' => 'USA',
         ]);
 
-        $request = new Request();
-        $result = $this->movieService->getFilteredMovies($request);
+        $result = $this->movieService->getFilteredMovies([]);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
         $this->assertCount(2, $result->items());
@@ -55,7 +54,7 @@ class MovieServiceTest extends TestCase
     public function test_get_movie_by_id_returns_correct_movie()
     {
         $movie = Movie::create([
-            'movie_id' => 'test-movie-123',
+            'external_movie_id' => 'test-movie-123',
             'title' => 'Test Movie',
             'content_type' => 'Movie',
             'genre_primary' => 'Action',
@@ -64,16 +63,16 @@ class MovieServiceTest extends TestCase
             'country_of_origin' => 'USA',
         ]);
 
-        $result = $this->movieService->getMovieById('test-movie-123');
+        $result = $this->movieService->getMovieById($movie->id);
 
         $this->assertEquals($movie->id, $result->id);
-        $this->assertEquals('test-movie-123', $result->movie_id);
+        $this->assertEquals('test-movie-123', $result->external_movie_id);
     }
 
     public function test_get_movie_by_id_throws_exception_when_not_found()
     {
         $this->expectException(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
         
-        $this->movieService->getMovieById('non-existent-id');
+        $this->movieService->getMovieById(999999);
     }
 }

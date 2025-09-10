@@ -43,13 +43,17 @@ class ReviewController extends Controller
     {
         try {
             $validated = $request->validate([
-                'review_id' => 'required|integer|unique:reviews,review_id',
                 'user_id' => 'required|integer|exists:users,id',
                 'movie_id' => 'required|integer|exists:movies,id',
                 'rating' => 'required|integer|min:1|max:5',
                 'review_text' => 'nullable|string|max:2000',
                 'review_date' => 'required|date',
-                'helpfulness' => 'nullable|integer|min:0',
+                'device_type' => 'nullable|string|max:255',
+                'is_verified_watch' => 'nullable|boolean',
+                'helpful_votes' => 'nullable|integer|min:0',
+                'total_votes' => 'nullable|integer|min:0',
+                'sentiment' => 'nullable|string|in:positive,negative,neutral',
+                'sentiment_score' => 'nullable|numeric|min:-1|max:1',
             ]);
 
             $review = $this->reviewService->createReview($validated);
@@ -71,7 +75,12 @@ class ReviewController extends Controller
             $validated = $request->validate([
                 'rating' => 'sometimes|integer|min:1|max:5',
                 'review_text' => 'sometimes|nullable|string|max:2000',
-                'helpfulness' => 'sometimes|integer|min:0',
+                'helpful_votes' => 'sometimes|integer|min:0',
+                'total_votes' => 'sometimes|integer|min:0',
+                'device_type' => 'sometimes|string|max:255',
+                'is_verified_watch' => 'sometimes|boolean',
+                'sentiment' => 'sometimes|string|in:positive,negative,neutral',
+                'sentiment_score' => 'sometimes|numeric|min:-1|max:1',
             ]);
 
             $review = $this->reviewService->updateReview($id, $validated);

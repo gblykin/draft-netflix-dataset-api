@@ -14,13 +14,19 @@ class UserService
         $query = User::query();
         
         // Check if user wants to exclude reviewed movies for performance
-        if (!($filters['exclude_reviewed_movies'] ?? false)) {
+        $excludeReviewedMovies = isset($filters['exclude_reviewed_movies']) && 
+            in_array($filters['exclude_reviewed_movies'], ['true', '1', 1, true], true);
+        
+        if (!$excludeReviewedMovies) {
             $query->with(['reviewedMovies' => function ($query) use ($filters) {
                 // Sort by review creation date (pivot table created_at)
                 $query->orderBy('reviews.created_at', 'desc');
                 
                 // Limit reviewed movies per user unless user wants all movies
-                if (!($filters['show_all_reviewed_movies'] ?? false)) {
+                $showAllReviewedMovies = isset($filters['show_all_reviewed_movies']) && 
+                    in_array($filters['show_all_reviewed_movies'], ['true', '1', 1, true], true);
+                
+                if (!$showAllReviewedMovies) {
                     $query->limit(10);
                 }
             }]);
@@ -34,8 +40,7 @@ class UserService
     public function getUserById(string $id): User
     {
         return User::with(['reviews.movie', 'reviewedMovies'])
-            ->where('external_user_id', $id)
-            ->orWhere('id', $id)
+            ->where('id', $id)
             ->firstOrFail();
     }
 

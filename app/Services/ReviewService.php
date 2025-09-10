@@ -21,8 +21,7 @@ class ReviewService
     public function getReviewById(string $id): Review
     {
         return Review::with(['user', 'movie'])
-            ->where('external_review_id', $id)
-            ->orWhere('id', $id)
+            ->where('id', $id)
             ->firstOrFail();
     }
 
@@ -35,8 +34,7 @@ class ReviewService
 
     public function updateReview(string $id, array $data): Review
     {
-        $review = Review::where('external_review_id', $id)
-            ->orWhere('id', $id)
+        $review = Review::where('id', $id)
             ->firstOrFail();
 
         $review->update($data);
@@ -46,8 +44,7 @@ class ReviewService
 
     public function deleteReview(string $id): bool
     {
-        $review = Review::where('external_review_id', $id)
-            ->orWhere('id', $id)
+        $review = Review::where('id', $id)
             ->firstOrFail();
 
         return $review->delete();

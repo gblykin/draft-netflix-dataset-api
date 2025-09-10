@@ -57,7 +57,7 @@ class Movie extends Model
      */
     public function reviewers(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'reviews', 'movie_id', 'user_id', 'movie_id', 'user_id')
+        return $this->belongsToMany(User::class, 'reviews', 'movie_id', 'user_id', 'id', 'id')
                     ->withPivot('rating', 'review_text', 'review_date', 'device_type', 'is_verified_watch', 'helpful_votes', 'total_votes', 'sentiment', 'sentiment_score')
                     ->withTimestamps();
     }

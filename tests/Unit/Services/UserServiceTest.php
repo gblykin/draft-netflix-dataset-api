@@ -24,7 +24,7 @@ class UserServiceTest extends TestCase
     private function createTestUser(array $overrides = []): User
     {
         $defaults = [
-            'user_id' => 'test-user-' . uniqid(),
+            'external_user_id' => 'test-user-' . uniqid(),
             'email' => 'test@example.com',
             'first_name' => 'Test',
             'last_name' => 'User',
@@ -42,7 +42,7 @@ class UserServiceTest extends TestCase
     {
         // Create test users using helper
         $this->createTestUser([
-            'user_id' => 'test-user-1',
+            'external_user_id' => 'test-user-1',
             'email' => 'user1@test.com',
             'first_name' => 'John',
             'last_name' => 'Doe',
@@ -50,7 +50,7 @@ class UserServiceTest extends TestCase
             'city' => 'New York',
         ]);
         $this->createTestUser([
-            'user_id' => 'test-user-2',
+            'external_user_id' => 'test-user-2',
             'email' => 'user2@test.com',
             'first_name' => 'Jane',
             'last_name' => 'Smith',
@@ -58,8 +58,7 @@ class UserServiceTest extends TestCase
             'city' => 'Toronto',
         ]);
 
-        $request = new Request();
-        $result = $this->userService->getFilteredUsers($request);
+        $result = $this->userService->getFilteredUsers([]);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
         $this->assertCount(2, $result->items());
@@ -68,7 +67,7 @@ class UserServiceTest extends TestCase
     public function test_get_user_by_id_returns_correct_user()
     {
         $user = $this->createTestUser([
-            'user_id' => 'test-user-123',
+            'external_user_id' => 'test-user-123',
             'email' => 'test@example.com',
             'first_name' => 'Test',
             'last_name' => 'User',
@@ -76,16 +75,16 @@ class UserServiceTest extends TestCase
             'city' => 'Los Angeles',
         ]);
 
-        $result = $this->userService->getUserById('test-user-123');
+        $result = $this->userService->getUserById($user->id);
 
         $this->assertEquals($user->id, $result->id);
-        $this->assertEquals('test-user-123', $result->user_id);
+        $this->assertEquals('test-user-123', $result->external_user_id);
     }
 
     public function test_get_users_by_country_returns_filtered_results()
     {
         $this->createTestUser([
-            'user_id' => 'user-1',
+            'external_user_id' => 'user-1',
             'email' => 'user1@test.com',
             'first_name' => 'John',
             'last_name' => 'Doe',
@@ -93,7 +92,7 @@ class UserServiceTest extends TestCase
             'city' => 'New York',
         ]);
         $this->createTestUser([
-            'user_id' => 'user-2',
+            'external_user_id' => 'user-2',
             'email' => 'user2@test.com',
             'first_name' => 'Jane',
             'last_name' => 'Smith',
@@ -101,7 +100,7 @@ class UserServiceTest extends TestCase
             'city' => 'Toronto',
         ]);
         $this->createTestUser([
-            'user_id' => 'user-3',
+            'external_user_id' => 'user-3',
             'email' => 'user3@test.com',
             'first_name' => 'Bob',
             'last_name' => 'Johnson',
@@ -118,7 +117,7 @@ class UserServiceTest extends TestCase
     public function test_get_active_users_returns_only_active_users()
     {
         $this->createTestUser([
-            'user_id' => 'user-1',
+            'external_user_id' => 'user-1',
             'email' => 'user1@test.com',
             'first_name' => 'John',
             'last_name' => 'Doe',
@@ -127,7 +126,7 @@ class UserServiceTest extends TestCase
             'is_active' => true,
         ]);
         $this->createTestUser([
-            'user_id' => 'user-2',
+            'external_user_id' => 'user-2',
             'email' => 'user2@test.com',
             'first_name' => 'Jane',
             'last_name' => 'Smith',
@@ -136,7 +135,7 @@ class UserServiceTest extends TestCase
             'is_active' => false,
         ]);
         $this->createTestUser([
-            'user_id' => 'user-3',
+            'external_user_id' => 'user-3',
             'email' => 'user3@test.com',
             'first_name' => 'Bob',
             'last_name' => 'Johnson',

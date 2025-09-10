@@ -31,6 +31,12 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - Users can have multiple reviews
 - Movies can have multiple reviews from different users
 
+### Database Design
+- **Internal IDs**: All tables use auto-incrementing primary keys (`id`) for relationships
+- **External IDs**: CSV data uses external identifiers (`external_user_id`, `external_movie_id`, `external_review_id`) for mapping
+- **Foreign Keys**: Relationships use internal IDs for referential integrity
+- **CSV Mapping**: External IDs are preserved for data import/export operations
+
 ## 🚀 Quick Start with Docker
 
 ### Prerequisites
@@ -177,8 +183,8 @@ curl "http://localhost:8000/api/movies?sort_by=release_year&sort_order=desc&per_
 
 ### Get Movie Details
 ```bash
-# Get specific movie with reviews and users
-curl "http://localhost:8000/api/movies/movie_123"
+# Get specific movie with reviews and users (using external movie ID)
+curl "http://localhost:8000/api/movies/movie_0001"
 ```
 
 ### Get Users with Filtering
@@ -195,30 +201,32 @@ curl "http://localhost:8000/api/users?age_min=25&age_max=35"
 curl -X POST "http://localhost:8000/api/reviews" \
   -H "Content-Type: application/json" \
   -d '{
-    "review_id": "new_review_123",
-    "user_id": "user_456",
-    "movie_id": "movie_789",
+    "external_review_id": "new_review_123",
+    "external_user_id": "user_00001",
+    "external_movie_id": "movie_0001",
     "rating": 5,
     "review_text": "Excellent movie!",
     "review_date": "2024-01-15",
-    "helpfulness": 0
+    "device_type": "Mobile",
+    "is_verified_watch": true
   }'
 ```
 
 ### Update a Review
 ```bash
-curl -X PUT "http://localhost:8000/api/reviews/review_123" \
+curl -X PUT "http://localhost:8000/api/reviews/review_000001" \
   -H "Content-Type: application/json" \
   -d '{
     "rating": 4,
     "review_text": "Good movie, but not perfect.",
-    "helpfulness": 5
+    "helpful_votes": 5,
+    "total_votes": 8
   }'
 ```
 
 ### Delete a Review
 ```bash
-curl -X DELETE "http://localhost:8000/api/reviews/review_123"
+curl -X DELETE "http://localhost:8000/api/reviews/review_000001"
 ```
 
 

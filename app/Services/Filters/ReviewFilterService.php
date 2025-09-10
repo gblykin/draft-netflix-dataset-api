@@ -34,7 +34,9 @@ class ReviewFilterService extends BaseFilterService
         }
 
         if (isset($this->filters['is_verified_watch'])) {
-            $this->query->where('is_verified_watch', (bool) $this->filters['is_verified_watch']);
+            $value = $this->filters['is_verified_watch'];
+            $booleanValue = in_array($value, ['true', '1', 1, true], true);
+            $this->query->where('is_verified_watch', $booleanValue);
         }
 
         if (isset($this->filters['sentiment'])) {

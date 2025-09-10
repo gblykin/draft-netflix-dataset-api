@@ -37,7 +37,7 @@ class ReviewListRequest extends FormRequest
             'rating_min' => 'sometimes|integer|min:1|max:5',
             'rating_max' => 'sometimes|integer|min:1|max:5|gte:rating_min',
             'device_type' => 'sometimes|string|max:255',
-            'is_verified_watch' => 'sometimes|boolean',
+            'is_verified_watch' => 'sometimes|in:true,false,1,0',
             'sentiment' => 'sometimes|string|in:positive,negative,neutral',
             'sentiment_score_min' => 'sometimes|numeric|min:-1|max:1',
             'sentiment_score_max' => 'sometimes|numeric|min:-1|max:1|gte:sentiment_score_min',

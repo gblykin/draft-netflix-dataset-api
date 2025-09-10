@@ -39,7 +39,7 @@ class MovieListRequest extends FormRequest
             'rating' => 'sometimes|string|max:10',
             'country_of_origin' => 'sometimes|string|max:255',
             'language' => 'sometimes|string|max:255',
-            'is_netflix_original' => 'sometimes|boolean',
+            'is_netflix_original' => 'sometimes|in:true,false,1,0',
         ];
     }
 

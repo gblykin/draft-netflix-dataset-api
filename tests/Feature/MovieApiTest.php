@@ -25,7 +25,7 @@ class MovieApiTest extends TestCase
     {
         // Create test movies
         Movie::create([
-            'movie_id' => 'test_movie_1',
+            'external_movie_id' => 'test_movie_1',
             'title' => 'Test Movie 1',
             'content_type' => 'Movie',
             'genre_primary' => 'Action',
@@ -43,7 +43,7 @@ class MovieApiTest extends TestCase
         ]);
 
         Movie::create([
-            'movie_id' => 'test_movie_2',
+            'external_movie_id' => 'test_movie_2',
             'title' => 'Test Movie 2',
             'content_type' => 'Movie',
             'genre_primary' => 'Drama',
@@ -62,7 +62,7 @@ class MovieApiTest extends TestCase
 
         // Create test user
         User::create([
-            'user_id' => 'test_user_1',
+            'external_user_id' => 'test_user_1',
             'email' => 'test@example.com',
             'first_name' => 'Test',
             'last_name' => 'User',
@@ -81,10 +81,13 @@ class MovieApiTest extends TestCase
         ]);
 
         // Create test review
-        Review::create([
-            'review_id' => 'test_review_1',
-            'user_id' => 'test_user_1',
-            'movie_id' => 'test_movie_1',
+        $movie = Movie::where('external_movie_id', 'test_movie_1')->first();
+        $user = User::where('external_user_id', 'test_user_1')->first();
+        
+        $review = Review::create([
+            'external_review_id' => 'test_review_1',
+            'user_id' => $user->id, // Use internal user ID
+            'movie_id' => $movie->id, // Use internal movie ID
             'rating' => 5,
             'review_date' => '2023-06-01',
             'device_type' => 'Mobile',
@@ -95,6 +98,7 @@ class MovieApiTest extends TestCase
             'sentiment' => 'positive',
             'sentiment_score' => 0.8,
         ]);
+        
     }
 
     public function test_can_get_movies_list()
@@ -106,7 +110,7 @@ class MovieApiTest extends TestCase
                      'data' => [
                          '*' => [
                              'id',
-                             'movie_id',
+                             'external_movie_id',
                              'title',
                              'content_type',
                              'genre_primary',
@@ -142,7 +146,7 @@ class MovieApiTest extends TestCase
     {
         // Create a movie with Action in secondary genre
         Movie::create([
-            'movie_id' => 'test_movie_secondary',
+            'external_movie_id' => 'test_movie_secondary',
             'title' => 'Test Movie Secondary',
             'content_type' => 'Movie',
             'genre_primary' => 'Drama',
@@ -184,29 +188,30 @@ class MovieApiTest extends TestCase
 
     public function test_can_get_single_movie()
     {
-        $response = $this->getJson('/api/movies/test_movie_1');
+        $movie = Movie::where('external_movie_id', 'test_movie_1')->first();
+        $response = $this->getJson('/api/movies/' . $movie->id);
 
         $response->assertStatus(200)
                  ->assertJsonStructure([
-                     'data' => [
-                         'id',
-                         'movie_id',
-                         'title',
-                         'content_type',
-                         'genre_primary',
-                         'genre_secondary',
-                         'release_year',
-                         'reviews' => [
-                             '*' => [
-                                 'id',
-                                 'review_id',
-                                 'rating',
-                                 'review_text',
-                                 'user'
-                             ]
-                         ]
-                     ]
-                 ]);
+            'data' => [
+                'id',
+                'external_movie_id',
+                'title',
+                'content_type',
+                'genre_primary',
+                'genre_secondary',
+                'release_year',
+                'reviews' => [
+                    '*' => [
+                        'id',
+                        'external_review_id',
+                        'rating',
+                        'review_text',
+                        'user'
+                    ]
+                ]
+            ]
+        ]);
     }
 
     public function test_can_sort_movies()
@@ -245,8 +250,46 @@ class MovieApiTest extends TestCase
 
     public function test_movie_not_found()
     {
-        $response = $this->getJson('/api/movies/nonexistent_movie');
+        $response = $this->getJson('/api/movies/999999');
 
         $response->assertStatus(404);
+    }
+
+    public function test_can_filter_movies_by_boolean_parameters()
+    {
+        // Test is_netflix_original=true
+        $response = $this->getJson('/api/movies?is_netflix_original=true');
+        $response->assertStatus(200);
+        
+        $data = $response->json('data');
+        $this->assertCount(1, $data);
+        $this->assertTrue($data[0]['is_netflix_original']);
+
+        // Test is_netflix_original=false
+        $response = $this->getJson('/api/movies?is_netflix_original=false');
+        $response->assertStatus(200);
+        
+        $data = $response->json('data');
+        $this->assertCount(1, $data);
+        $this->assertFalse($data[0]['is_netflix_original']);
+    }
+
+    public function test_boolean_parameter_validation_works()
+    {
+        // Test invalid boolean value
+        $response = $this->getJson('/api/movies?is_netflix_original=invalid');
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['is_netflix_original']);
+    }
+
+    public function test_can_combine_multiple_filters()
+    {
+        $response = $this->getJson('/api/movies?content_type=Movie&is_netflix_original=true');
+        $response->assertStatus(200);
+        
+        $data = $response->json('data');
+        $this->assertCount(1, $data);
+        $this->assertEquals('Movie', $data[0]['content_type']);
+        $this->assertTrue($data[0]['is_netflix_original']);
     }
 }

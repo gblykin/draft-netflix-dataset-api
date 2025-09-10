@@ -30,7 +30,9 @@ class UserFilterService extends BaseFilterService
         }
 
         if (isset($this->filters['is_active'])) {
-            $this->query->where('is_active', (bool) $this->filters['is_active']);
+            $value = $this->filters['is_active'];
+            $booleanValue = in_array($value, ['true', '1', 1, true], true);
+            $this->query->where('is_active', $booleanValue);
         }
 
         if (isset($this->filters['primary_device'])) {
