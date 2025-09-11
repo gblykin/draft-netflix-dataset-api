@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Sentiment;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 class ReviewListRequest extends FormRequest
 {
@@ -13,6 +14,30 @@ class ReviewListRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $data = $this->all();
+            
+            // Validate rating_min <= rating_max when both are provided
+            if (isset($data['rating_min']) && isset($data['rating_max'])) {
+                if ($data['rating_min'] > $data['rating_max']) {
+                    $validator->errors()->add('rating_max', 'The maximum rating must be greater than or equal to the minimum rating.');
+                }
+            }
+            
+            // Validate sentiment_score_min <= sentiment_score_max when both are provided
+            if (isset($data['sentiment_score_min']) && isset($data['sentiment_score_max'])) {
+                if ($data['sentiment_score_min'] > $data['sentiment_score_max']) {
+                    $validator->errors()->add('sentiment_score_max', 'The maximum sentiment score must be greater than or equal to the minimum sentiment score.');
+                }
+            }
+        });
     }
 
     /**
@@ -36,12 +61,12 @@ class ReviewListRequest extends FormRequest
             'movie_id' => 'sometimes|integer|exists:movies,id',
             'rating' => 'sometimes|integer|min:1|max:5',
             'rating_min' => 'sometimes|integer|min:1|max:5',
-            'rating_max' => 'sometimes|integer|min:1|max:5|gte:rating_min',
+            'rating_max' => 'sometimes|integer|min:1|max:5',
             'device_type' => 'sometimes|string|max:255',
             'is_verified_watch' => 'sometimes|in:true,false,1,0',
             'sentiment' => 'sometimes|string|in:' . implode(',', Sentiment::values()),
             'sentiment_score_min' => 'sometimes|numeric|min:-1|max:1',
-            'sentiment_score_max' => 'sometimes|numeric|min:-1|max:1|gte:sentiment_score_min',
+            'sentiment_score_max' => 'sometimes|numeric|min:-1|max:1',
             'date_from' => 'sometimes|date',
             'date_to' => 'sometimes|date|after_or_equal:date_from',
         ];
