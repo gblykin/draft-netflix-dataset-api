@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\Device;
+use App\Enums\Sentiment;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,17 +15,17 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('external_review_id')->unique(); 
+            $table->string('external_review_id')->nullable()->unique(); 
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('SET NULL');
             $table->foreignId('movie_id')->constrained()->onDelete('CASCADE');
-            $table->integer('rating'); // 1-5 stars
+            $table->tinyInteger('rating')->unsigned(); // 1-5 stars
             $table->date('review_date'); 
-            $table->string('device_type');
+            $table->enum('device_type', Device::values());
             $table->boolean('is_verified_watch')->default(false);
             $table->integer('helpful_votes')->default(0);
             $table->integer('total_votes')->default(0);
             $table->text('review_text')->nullable();
-            $table->string('sentiment')->nullable(); // Positive, Negative, Neutral
+            $table->enum('sentiment', Sentiment::values())->nullable(); // Positive, Negative, Neutral
             $table->decimal('sentiment_score', 5, 4)->nullable(); // -1.0 to 1.0
             $table->timestamps();
 

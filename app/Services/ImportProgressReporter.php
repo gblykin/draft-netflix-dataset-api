@@ -8,6 +8,7 @@ class ImportProgressReporter
     private int $lastReportedCount = 0;
     private array $recentErrors = [];
     private int $maxErrorsToKeep = 50; // Keep only last 50 errors in memory
+    private int $totalRecords = 0; // Total records in the file
 
     public function __construct()
     {
@@ -19,6 +20,8 @@ class ImportProgressReporter
         $this->stats = [
             'total_processed' => 0,
             'successful' => 0,
+            'inserted' => 0,
+            'updated' => 0,
             'failed' => 0,
             'status' => 'running',
             'started_at' => now(),
@@ -36,6 +39,16 @@ class ImportProgressReporter
     public function recordSuccess(): void
     {
         $this->stats['successful']++;
+    }
+
+    public function recordInsert(): void
+    {
+        $this->stats['inserted']++;
+    }
+
+    public function recordUpdate(): void
+    {
+        $this->stats['updated']++;
     }
 
     public function recordFailure(string $error, ?int $row = null): void
@@ -64,11 +77,11 @@ class ImportProgressReporter
 
     public function reportProgress(int $currentCount): void
     {
-        $percentage = $this->stats['total_processed'] > 0 
-            ? round(($currentCount / $this->stats['total_processed']) * 100, 1) 
+        $percentage = $this->totalRecords > 0 
+            ? round(($currentCount / $this->totalRecords) * 100, 1) 
             : 0;
         
-        echo "Processed {$currentCount} of {$this->stats['total_processed']} ({$percentage}%) records...\n";
+        echo "Processed {$currentCount} of {$this->totalRecords} ({$percentage}%) records...\n";
         $this->lastReportedCount = $currentCount;
     }
 
@@ -107,6 +120,16 @@ class ImportProgressReporter
     public function setError(string $error): void
     {
         $this->stats['error'] = $error;
+    }
+
+    public function setTotalRecords(int $totalRecords): void
+    {
+        $this->totalRecords = $totalRecords;
+    }
+
+    public function getTotalRecords(): int
+    {
+        return $this->totalRecords;
     }
 }
 

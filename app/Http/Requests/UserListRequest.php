@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Device;
+use App\Enums\Gender;
+use App\Enums\SubscriptionPlan;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserListRequest extends FormRequest
@@ -34,8 +37,9 @@ class UserListRequest extends FormRequest
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|max:255',
             'city' => 'sometimes|string|max:255',
-            'subscription_plan' => 'sometimes|string|in:basic,premium,family',
-            'gender' => 'sometimes|string|in:male,female,other',
+            'subscription_plan' => 'sometimes|string|in:' . implode(',', SubscriptionPlan::values()),
+            'gender' => 'sometimes|string|in:' . implode(',', Gender::values()),
+            'primary_device' => 'sometimes|string|in:' . implode(',', Device::values()),
             'is_active' => 'sometimes|in:true,false,1,0',
             'age_min' => 'sometimes|integer|min:0|max:120',
             'age_max' => 'sometimes|integer|min:0|max:120|gte:age_min',
@@ -68,8 +72,9 @@ class UserListRequest extends FormRequest
             'per_page.max' => 'The per page value may not be greater than 100.',
             'sort_by.in' => 'The sort by field must be one of: name, email, city, subscription_plan, created_at, source_created_at.',
             'sort_direction.in' => 'The sort direction must be either asc or desc.',
-            'subscription_plan.in' => 'The subscription plan must be one of: basic, premium, family.',
-            'gender.in' => 'The gender must be one of: male, female, other.',
+            'subscription_plan.in' => 'The subscription plan must be one of: ' . implode(', ', SubscriptionPlan::values()) . '.',
+            'gender.in' => 'The gender must be one of: ' . implode(', ', Gender::values()) . '.',
+            'primary_device.in' => 'The primary device must be one of: ' . implode(', ', Device::values()) . '.',
             'age_max.gte' => 'The maximum age must be greater than or equal to the minimum age.',
             'household_size_max.gte' => 'The maximum household size must be greater than or equal to the minimum household size.',
             'subscription_start_date_to.after_or_equal' => 'The subscription start date to must be after or equal to the from date.',

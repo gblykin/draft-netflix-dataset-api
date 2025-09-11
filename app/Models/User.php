@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\Device;
+use App\Enums\Gender;
+use App\Enums\SubscriptionPlan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -36,7 +39,9 @@ class User extends Model
         'monthly_spend' => 'decimal:2',
         'household_size' => 'integer',
         'age' => 'integer',
-        'gender' => 'string',
+        'gender' => Gender::class,
+        'primary_device' => Device::class,
+        'subscription_plan' => SubscriptionPlan::class,
         'source_created_at' => 'datetime',
     ];
 

@@ -35,10 +35,14 @@ class ReviewDataTransformer extends BaseDataTransformer
             case 'external_review_id':
             case 'external_user_id':
             case 'external_movie_id':
-            case 'device_type':
             case 'review_text':
-            case 'sentiment':
                 return $this->normalizeString($value);
+                
+            case 'device_type':
+                return $this->normalizeDevice($value);
+                
+            case 'sentiment':
+                return $this->normalizeSentiment($value);
                 
             case 'rating':
             case 'helpful_votes':
@@ -124,4 +128,5 @@ class ReviewDataTransformer extends BaseDataTransformer
 
         return $data;
     }
+
 }

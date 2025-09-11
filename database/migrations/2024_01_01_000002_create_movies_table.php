@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\ContentType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,14 +14,14 @@ return new class extends Migration
     {
         Schema::create('movies', function (Blueprint $table) {
             $table->id();
-            $table->string('external_movie_id')->unique(); 
+            $table->string('external_movie_id')->nullable()->unique(); 
             $table->string('title');
-            $table->string('content_type'); // Movie, TV Show, etc.
+            $table->enum('content_type', ContentType::values());
             $table->string('genre_primary');
             $table->string('genre_secondary')->nullable();
             $table->year('release_year');
             $table->integer('duration_minutes')->nullable();
-            $table->string('rating')->nullable(); // MPAA rating
+            $table->string('rating')->nullable();
             $table->string('language');
             $table->string('country_of_origin');
             $table->decimal('imdb_rating', 3, 1)->nullable();
@@ -30,13 +31,19 @@ return new class extends Migration
             $table->integer('number_of_episodes')->nullable();
             $table->boolean('is_netflix_original')->default(false);
             $table->date('added_to_platform')->nullable();
-            $table->text('content_warning')->nullable();
+            $table->boolean('content_warning')->default(false);
             $table->timestamps();
             
-            $table->index(['content_type', 'genre_primary']);
-            $table->index(['release_year', 'imdb_rating']);
-            $table->index(['is_netflix_original', 'content_type']);
+            $table->index('content_type');
+            $table->index('genre_primary');
+            $table->index('genre_secondary');
+            $table->index('release_year');
+            $table->index('rating');
+            $table->index('language');
             $table->index('country_of_origin');
+            $table->index('imdb_rating');
+            $table->index('is_netflix_original');
+            $table->index('content_warning');
         });
     }
 

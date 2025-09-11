@@ -2,6 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ContentType;
+use App\Enums\Device;
+use App\Enums\Gender;
+use App\Enums\Sentiment;
+use App\Enums\SubscriptionPlan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -27,7 +32,7 @@ class MovieApiTest extends TestCase
         Movie::create([
             'external_movie_id' => 'test_movie_1',
             'title' => 'Test Movie 1',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Action',
             'genre_secondary' => 'Thriller',
             'release_year' => 2023,
@@ -45,7 +50,7 @@ class MovieApiTest extends TestCase
         Movie::create([
             'external_movie_id' => 'test_movie_2',
             'title' => 'Test Movie 2',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Drama',
             'genre_secondary' => 'Romance',
             'release_year' => 2022,
@@ -67,15 +72,15 @@ class MovieApiTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'User',
             'age' => 25,
-            'gender' => 'Male',
+            'gender' => Gender::MALE,
             'country' => 'USA',
             'state_province' => 'New York',
             'city' => 'New York',
-            'subscription_plan' => 'Premium',
+            'subscription_plan' => SubscriptionPlan::PREMIUM,
             'subscription_start_date' => '2023-01-01',
             'is_active' => true,
             'monthly_spend' => 15.99,
-            'primary_device' => 'Mobile',
+            'primary_device' => Device::MOBILE,
             'household_size' => 1,
             'source_created_at' => '2023-01-01 10:00:00',
         ]);
@@ -90,12 +95,12 @@ class MovieApiTest extends TestCase
             'movie_id' => $movie->id, // Use internal movie ID
             'rating' => 5,
             'review_date' => '2023-06-01',
-            'device_type' => 'Mobile',
+            'device_type' => Device::MOBILE,
             'is_verified_watch' => true,
             'helpful_votes' => 8,
             'total_votes' => 10,
             'review_text' => 'Great movie!',
-            'sentiment' => 'positive',
+            'sentiment' => Sentiment::POSITIVE,
             'sentiment_score' => 0.8,
         ]);
         
@@ -148,7 +153,7 @@ class MovieApiTest extends TestCase
         Movie::create([
             'external_movie_id' => 'test_movie_secondary',
             'title' => 'Test Movie Secondary',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Drama',
             'genre_secondary' => 'Action',
             'release_year' => 2023,
@@ -284,7 +289,7 @@ class MovieApiTest extends TestCase
 
     public function test_can_combine_multiple_filters()
     {
-        $response = $this->getJson('/api/movies?content_type=Movie&is_netflix_original=true');
+        $response = $this->getJson('/api/movies?content_type=' . ContentType::MOVIE->value . '&is_netflix_original=true');
         $response->assertStatus(200);
         
         $data = $response->json('data');

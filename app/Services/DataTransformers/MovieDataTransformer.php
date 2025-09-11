@@ -2,6 +2,8 @@
 
 namespace App\Services\DataTransformers;
 
+use App\Enums\ContentType;
+
 class MovieDataTransformer extends BaseDataTransformer
 {
     protected function getColumnMapping(): array
@@ -37,14 +39,15 @@ class MovieDataTransformer extends BaseDataTransformer
         switch ($column) {
             case 'external_movie_id':
             case 'title':
-            case 'content_type':
             case 'genre_primary':
             case 'genre_secondary':
             case 'rating':
             case 'language':
             case 'country_of_origin':
-            case 'content_warning':
                 return $this->normalizeString($value);
+                
+            case 'content_type':
+                return $this->normalizeContentType($value);
                 
             case 'release_year':
                 return $this->parseInteger($value);
@@ -60,6 +63,7 @@ class MovieDataTransformer extends BaseDataTransformer
                 return $this->parseFloat($value);
                 
             case 'is_netflix_original':
+            case 'content_warning':
                 return $this->normalizeBoolean($value);
                 
             case 'added_to_platform':
@@ -74,6 +78,7 @@ class MovieDataTransformer extends BaseDataTransformer
     {
         return match($field) {
             'is_netflix_original' => false,
+            'content_warning' => false,
             default => $default
         };
     }
@@ -83,8 +88,16 @@ class MovieDataTransformer extends BaseDataTransformer
         $this->validationErrors = [];
         
         // Required fields (using transformed field names for validation)
-        $requiredFields = ['external_movie_id', 'title', 'content_type', 'genre_primary', 'release_year', 'language', 'country_of_origin'];
+        $requiredFields = ['title', 'content_type', 'genre_primary', 'release_year', 'language', 'country_of_origin'];
         $this->validateRequiredFields($data, $requiredFields);
+        
+        // Content type validation (required field with specific allowed values)
+        if (isset($data['content_type']) && $data['content_type'] !== '' && $data['content_type'] !== null) {
+            $validContentTypes = ContentType::values();
+            if (!in_array($data['content_type'], $validContentTypes)) {
+                $this->validationErrors[] = "Content type must be one of: " . implode(', ', $validContentTypes);
+            }
+        }
         
         // Validate release year
         $this->validateNumericRange($data['release_year'] ?? null, 1888, date('Y') + 5, 'Release year');
@@ -97,4 +110,5 @@ class MovieDataTransformer extends BaseDataTransformer
         
         return empty($this->validationErrors);
     }
+
 }

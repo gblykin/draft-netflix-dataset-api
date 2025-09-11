@@ -43,6 +43,10 @@ class DataImportService
             
             $headers = $this->reader->getHeaders();
             
+            // Set total records for progress reporting
+            $totalRecords = $this->reader->getRecordCount();
+            $this->progressReporter->setTotalRecords($totalRecords);
+            
             foreach ($this->reader->read() as $index => $rawData) {
                 $this->processRecord($rawData, $headers, $index);
                 
@@ -82,6 +86,22 @@ class DataImportService
         return $this->progressReporter->getStats()['errors'] ?? [];
     }
 
+    /**
+     * Get a more informative error message for write failures
+     */
+    private function getWriteErrorMessage(): string
+    {
+        // Get the actual error message from the writer
+        $lastError = $this->writer->getLastError();
+        
+        if (!empty($lastError)) {
+            return "Write failed: {$lastError}";
+        }
+        
+        // Fallback to generic message if no specific error is available
+        return "Write failed: Could not write record to destination";
+    }
+
     private function processRecord(array $rawData, array $headers, int $index): void
     {
         try {
@@ -108,8 +128,18 @@ class DataImportService
             // Write the data
             if ($this->writer->writeRecord($transformedData)) {
                 $this->progressReporter->recordSuccess();
+                
+                // Track whether it was an insert or update
+                $lastOperation = $this->writer->getLastOperation();
+                if ($lastOperation === 'insert') {
+                    $this->progressReporter->recordInsert();
+                } elseif ($lastOperation === 'update') {
+                    $this->progressReporter->recordUpdate();
+                }
             } else {
-                $this->progressReporter->recordFailure('Write failed: Could not write record to destination', $index + 1);
+                // Get the specific error from the writer
+                $errorMessage = $this->getWriteErrorMessage();
+                $this->progressReporter->recordFailure($errorMessage, $index + 1);
                 
                 // Log write failures using the new logger
                 $this->logger->logWriteError($index + 1, $transformedData);

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\Device;
+use App\Enums\Sentiment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,12 +24,12 @@ class ReviewFactory extends Factory
             'movie_id' => \App\Models\Movie::factory(), // Will be overridden in tests
             'rating' => $this->faker->numberBetween(1, 5),
             'review_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'device_type' => $this->faker->randomElement(['Mobile', 'TV', 'Computer', 'Tablet']),
+            'device_type' => $this->faker->randomElement(Device::cases()),
             'is_verified_watch' => $this->faker->boolean(70), // 70% chance of being verified
             'helpful_votes' => $this->faker->numberBetween(0, 100),
             'total_votes' => $this->faker->numberBetween(0, 200),
             'review_text' => $this->faker->optional(0.7)->paragraph(),
-            'sentiment' => $this->faker->randomElement(['Positive', 'Negative', 'Neutral']),
+            'sentiment' => $this->faker->randomElement(Sentiment::cases()),
             'sentiment_score' => $this->faker->randomFloat(4, -1.0, 1.0),
         ];
     }

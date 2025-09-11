@@ -2,6 +2,9 @@
 
 namespace Tests\Unit\Services;
 
+use App\Enums\ContentType;
+use App\Enums\Device;
+use App\Enums\SubscriptionPlan;
 use App\Models\Review;
 use App\Models\User;
 use App\Models\Movie;
@@ -32,7 +35,7 @@ class ReviewServiceTest extends TestCase
             'last_name' => 'User',
             'country' => 'USA',
             'city' => 'New York',
-            'subscription_plan' => 'Basic',
+            'subscription_plan' => SubscriptionPlan::BASIC,
             'subscription_start_date' => now()->toDateString(),
             'source_created_at' => now()->subMonths(6),
         ];
@@ -45,7 +48,7 @@ class ReviewServiceTest extends TestCase
         $defaults = [
             'external_movie_id' => 'test-movie-' . uniqid(),
             'title' => 'Test Movie',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Action',
             'release_year' => 2023,
             'language' => 'English',
@@ -63,7 +66,7 @@ class ReviewServiceTest extends TestCase
             'movie_id' => 1, // Use internal movie ID
             'rating' => 5,
             'review_date' => now()->toDateString(),
-            'device_type' => 'Mobile',
+            'device_type' => Device::MOBILE,
         ];
 
         return Review::create(array_merge($defaults, $overrides));
@@ -148,7 +151,7 @@ class ReviewServiceTest extends TestCase
             'rating' => 5,
             'review_text' => 'Great movie!',
             'review_date' => now()->toDateString(),
-            'device_type' => 'Mobile',
+            'device_type' => Device::MOBILE,
         ];
 
         $result = $this->reviewService->createReview($data);

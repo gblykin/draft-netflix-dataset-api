@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\Enums\SubscriptionPlan;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,7 +31,7 @@ class UserServiceTest extends TestCase
             'last_name' => 'User',
             'country' => 'USA',
             'city' => 'New York',
-            'subscription_plan' => 'Basic',
+            'subscription_plan' => SubscriptionPlan::BASIC,
             'subscription_start_date' => now()->toDateString(),
             'source_created_at' => now()->subMonths(6),
         ];

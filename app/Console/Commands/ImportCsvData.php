@@ -119,6 +119,8 @@ class ImportCsvData extends Command
                 ['Status', $stats['status']],
                 ['Total Processed', $stats['total_processed']],
                 ['Successful', $stats['successful']],
+                ['Inserted', $stats['inserted'] ?? 0],
+                ['Updated', $stats['updated'] ?? 0],
                 ['Failed', $stats['failed']],
                 ['Duration', $stats['duration_seconds'] . ' seconds'],
             ]

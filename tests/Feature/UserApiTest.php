@@ -2,6 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Enums\ContentType;
+use App\Enums\Device;
+use App\Enums\Gender;
+use App\Enums\Sentiment;
+use App\Enums\SubscriptionPlan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -30,15 +35,15 @@ class UserApiTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'User1',
             'age' => 25,
-            'gender' => 'Male',
+            'gender' => Gender::MALE,
             'country' => 'USA',
             'state_province' => 'New York',
             'city' => 'New York',
-            'subscription_plan' => 'premium',
+            'subscription_plan' => SubscriptionPlan::PREMIUM,
             'subscription_start_date' => '2023-01-01',
             'is_active' => true,
             'monthly_spend' => 15.99,
-            'primary_device' => 'Mobile',
+            'primary_device' => Device::MOBILE,
             'household_size' => 1,
             'source_created_at' => '2023-01-01 10:00:00',
         ]);
@@ -49,15 +54,15 @@ class UserApiTest extends TestCase
             'first_name' => 'Test',
             'last_name' => 'User2',
             'age' => 30,
-            'gender' => 'Female',
+            'gender' => Gender::FEMALE,
             'country' => 'Canada',
             'state_province' => 'Ontario',
             'city' => 'Toronto',
-            'subscription_plan' => 'basic',
+            'subscription_plan' => SubscriptionPlan::BASIC,
             'subscription_start_date' => '2023-02-01',
             'is_active' => false,
             'monthly_spend' => 9.99,
-            'primary_device' => 'Desktop',
+            'primary_device' => Device::DESKTOP,
             'household_size' => 2,
             'source_created_at' => '2023-02-01 10:00:00',
         ]);
@@ -66,7 +71,7 @@ class UserApiTest extends TestCase
         $movie1 = Movie::create([
             'external_movie_id' => 'test_movie_1',
             'title' => 'Test Movie 1',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Action',
             'release_year' => 2023,
             'language' => 'English',
@@ -77,7 +82,7 @@ class UserApiTest extends TestCase
         $movie2 = Movie::create([
             'external_movie_id' => 'test_movie_2',
             'title' => 'Test Movie 2',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Drama',
             'release_year' => 2022,
             'language' => 'English',
@@ -92,12 +97,12 @@ class UserApiTest extends TestCase
             'movie_id' => 1, // Use internal movie ID
             'rating' => 5,
             'review_date' => '2023-06-01',
-            'device_type' => 'Mobile',
+            'device_type' => Device::MOBILE,
             'is_verified_watch' => true,
             'helpful_votes' => 8,
             'total_votes' => 10,
             'review_text' => 'Great movie!',
-            'sentiment' => 'positive',
+            'sentiment' => Sentiment::POSITIVE,
             'sentiment_score' => 0.8,
         ]);
 
@@ -107,12 +112,12 @@ class UserApiTest extends TestCase
             'movie_id' => 2, // Use internal movie ID
             'rating' => 4,
             'review_date' => '2023-07-01',
-            'device_type' => 'Desktop',
+            'device_type' => Device::DESKTOP,
             'is_verified_watch' => false,
             'helpful_votes' => 5,
             'total_votes' => 8,
             'review_text' => 'Good movie!',
-            'sentiment' => 'positive',
+            'sentiment' => Sentiment::POSITIVE,
             'sentiment_score' => 0.6,
         ]);
     }
@@ -194,13 +199,13 @@ class UserApiTest extends TestCase
 
     public function test_can_combine_multiple_filters()
     {
-        $response = $this->getJson('/api/users?is_active=true&subscription_plan=premium');
+        $response = $this->getJson('/api/users?is_active=true&subscription_plan=' . SubscriptionPlan::PREMIUM->value);
         $response->assertStatus(200);
         
         $data = $response->json('data');
         $this->assertCount(1, $data);
         $this->assertTrue($data[0]['is_active']);
-        $this->assertEquals('premium', $data[0]['subscription_plan']);
+        $this->assertEquals(SubscriptionPlan::PREMIUM->value, $data[0]['subscription_plan']);
     }
 
     public function test_can_get_single_user()

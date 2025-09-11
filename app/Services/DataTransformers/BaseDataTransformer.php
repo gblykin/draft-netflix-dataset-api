@@ -286,4 +286,92 @@ abstract class BaseDataTransformer implements DataTransformerInterface
     {
         return $default;
     }
+
+    /**
+     * Normalize device value to match enum values.
+     */
+    protected function normalizeDevice(string $value): string
+    {
+        $value = trim($value);
+        
+        // Map common variations to exact enum values
+        $mapping = [
+            'mobile' => 'Mobile',
+            'desktop' => 'Desktop',
+            'tablet' => 'Tablet',
+            'tv' => 'TV',
+            'smart tv' => 'Smart TV',
+            'smart_tv' => 'Smart TV',
+            'gaming console' => 'Gaming Console',
+            'gaming_console' => 'Gaming Console',
+            'laptop' => 'Laptop',
+            'other' => 'Other',
+        ];
+        
+        $lowerValue = strtolower($value);
+        return $mapping[$lowerValue] ?? $value;
+    }
+
+    /**
+     * Normalize subscription plan value to match enum values.
+     */
+    protected function normalizeSubscriptionPlan(string $value): string
+    {
+        $value = trim($value);
+        
+        // Map common variations to exact enum values
+        $mapping = [
+            'basic' => 'Basic',
+            'standard' => 'Standard', 
+            'premium' => 'Premium',
+            'premium+' => 'Premium+',
+            'premium plus' => 'Premium+',
+            'premium_plus' => 'Premium+',
+        ];
+        
+        $lowerValue = strtolower($value);
+        return $mapping[$lowerValue] ?? $value;
+    }
+
+    /**
+     * Normalize content type value to match enum values.
+     */
+    protected function normalizeContentType(string $value): string
+    {
+        $value = trim($value);
+        
+        // Map common variations to exact enum values
+        $mapping = [
+            'movie' => 'Movie',
+            'tv series' => 'TV Series',
+            'tv_series' => 'TV Series',
+            'documentary' => 'Documentary',
+            'stand-up comedy' => 'Stand-up Comedy',
+            'stand_up_comedy' => 'Stand-up Comedy',
+            'standup comedy' => 'Stand-up Comedy',
+            'limited series' => 'Limited Series',
+            'limited_series' => 'Limited Series',
+        ];
+        
+        $lowerValue = strtolower($value);
+        return $mapping[$lowerValue] ?? $value;
+    }
+
+    /**
+     * Normalize sentiment value to match enum values.
+     */
+    protected function normalizeSentiment(string $value): string
+    {
+        $value = trim($value);
+        
+        // Map common variations to exact enum values
+        $mapping = [
+            'positive' => 'positive',
+            'negative' => 'negative',
+            'neutral' => 'neutral',
+        ];
+        
+        $lowerValue = strtolower($value);
+        return $mapping[$lowerValue] ?? $value;
+    }
 }

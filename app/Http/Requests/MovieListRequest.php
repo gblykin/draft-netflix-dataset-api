@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\ContentType;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MovieListRequest extends FormRequest
@@ -34,7 +35,7 @@ class MovieListRequest extends FormRequest
             'genre' => 'sometimes|string|max:255',
             'genre_primary' => 'sometimes|string|max:255',
             'genre_secondary' => 'sometimes|string|max:255',
-            'content_type' => 'sometimes|string|max:255',
+            'content_type' => 'sometimes|string|in:' . implode(',', ContentType::values()),
             'release_year' => 'sometimes|integer|min:1900|max:' . date('Y'),
             'rating' => 'sometimes|string|max:10',
             'country_of_origin' => 'sometimes|string|max:255',
@@ -56,6 +57,7 @@ class MovieListRequest extends FormRequest
             'sort_direction.in' => 'The sort direction must be either asc or desc.',
             'release_year.max' => 'The release year cannot be in the future.',
             'release_year.min' => 'The release year must be after 1900.',
+            'content_type.in' => 'The content type must be one of: ' . implode(', ', ContentType::values()) . '.',
         ];
     }
 }

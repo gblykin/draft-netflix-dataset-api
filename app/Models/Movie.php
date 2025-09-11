@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ContentType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -33,6 +34,7 @@ class Movie extends Model
     ];
 
     protected $casts = [
+        'content_type' => ContentType::class,
         'release_year' => 'integer',
         'duration_minutes' => 'integer',
         'imdb_rating' => 'decimal:1',
@@ -41,6 +43,7 @@ class Movie extends Model
         'number_of_seasons' => 'integer',
         'number_of_episodes' => 'integer',
         'is_netflix_original' => 'boolean',
+        'content_warning' => 'boolean',
         'added_to_platform' => 'date',
     ];
 

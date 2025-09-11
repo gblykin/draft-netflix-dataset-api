@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services;
 
+use App\Enums\ContentType;
 use App\Models\Movie;
 use App\Services\MovieService;
 use App\Services\Filters\MovieFilterService;
@@ -29,7 +30,7 @@ class MovieServiceTest extends TestCase
         Movie::create([
             'external_movie_id' => 'test-movie-1',
             'title' => 'Test Movie 1',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Action',
             'release_year' => 2023,
             'language' => 'English',
@@ -38,7 +39,7 @@ class MovieServiceTest extends TestCase
         Movie::create([
             'external_movie_id' => 'test-movie-2',
             'title' => 'Test Movie 2',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Comedy',
             'release_year' => 2022,
             'language' => 'English',
@@ -56,7 +57,7 @@ class MovieServiceTest extends TestCase
         $movie = Movie::create([
             'external_movie_id' => 'test-movie-123',
             'title' => 'Test Movie',
-            'content_type' => 'Movie',
+            'content_type' => ContentType::MOVIE,
             'genre_primary' => 'Action',
             'release_year' => 2023,
             'language' => 'English',

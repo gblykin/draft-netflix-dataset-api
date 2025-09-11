@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\ContentType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,7 @@ class MovieFactory extends Factory
         return [
             'external_movie_id' => $this->faker->unique()->uuid(),
             'title' => $this->faker->sentence(3),
-            'content_type' => $this->faker->randomElement(['Movie', 'TV Show']),
+            'content_type' => $this->faker->randomElement(ContentType::cases()),
             'genre_primary' => $this->faker->randomElement(['Action', 'Comedy', 'Drama', 'Horror', 'Sci-Fi']),
             'genre_secondary' => $this->faker->randomElement(['Thriller', 'Romance', 'Adventure', 'Crime']),
             'release_year' => $this->faker->numberBetween(1990, 2024),
@@ -34,7 +35,7 @@ class MovieFactory extends Factory
             'number_of_episodes' => $this->faker->numberBetween(1, 100),
             'is_netflix_original' => $this->faker->boolean(),
             'added_to_platform' => $this->faker->dateTimeBetween('-2 years', 'now'),
-            'content_warning' => $this->faker->optional()->sentence(),
+            'content_warning' => $this->faker->boolean(30), // 30% chance of having content warning
         ];
     }
 }
