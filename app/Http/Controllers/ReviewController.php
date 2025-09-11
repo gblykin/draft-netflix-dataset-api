@@ -47,7 +47,6 @@ class ReviewController extends Controller
                 'movie_id' => 'required|integer|exists:movies,id',
                 'rating' => 'required|integer|min:1|max:5',
                 'review_text' => 'nullable|string|max:2000',
-                'review_date' => 'required|date',
                 'device_type' => 'nullable|string|max:255',
                 'is_verified_watch' => 'nullable|boolean',
                 'helpful_votes' => 'nullable|integer|min:0',
@@ -55,6 +54,9 @@ class ReviewController extends Controller
                 'sentiment' => 'nullable|string|in:positive,negative,neutral',
                 'sentiment_score' => 'nullable|numeric|min:-1|max:1',
             ]);
+
+            // Always set current date for API-created reviews
+            $validated['review_date'] = now()->toDateString();
 
             $review = $this->reviewService->createReview($validated);
             return new ReviewResource($review);
