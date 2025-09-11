@@ -713,17 +713,17 @@
 		},
 		{
 			"key": "movie_id",
-			"value": "movie_0001",
+			"value": "1",
 			"type": "string"
 		},
 		{
 			"key": "user_id",
-			"value": "user_00001",
+			"value": "1",
 			"type": "string"
 		},
 		{
 			"key": "review_id",
-			"value": "review_000001",
+			"value": "6308",
 			"type": "string"
 		}
 	]
