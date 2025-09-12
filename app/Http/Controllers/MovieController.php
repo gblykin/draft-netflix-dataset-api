@@ -6,7 +6,6 @@ use App\Http\Requests\MovieListRequest;
 use App\Http\Resources\MovieResource;
 use App\Models\Movie;
 use App\Services\MovieService;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MovieController extends Controller
 {
@@ -17,7 +16,7 @@ class MovieController extends Controller
     /**
      * Display a listing of movies with filtering and pagination.
      */
-    public function index(MovieListRequest $request): AnonymousResourceCollection
+    public function index(MovieListRequest $request)
     {
         $requestData = $request->all();
         $movies = $this->movieService->getFilteredMovies($requestData);

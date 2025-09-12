@@ -6,7 +6,6 @@ use App\Http\Requests\UserListRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
@@ -17,7 +16,7 @@ class UserController extends Controller
     /**
      * Display a listing of users with their reviewed movies.
      */
-    public function index(UserListRequest $request): AnonymousResourceCollection
+    public function index(UserListRequest $request)
     { 
         $requestData = $request->all();
         $users = $this->userService->getFilteredUsers($requestData);

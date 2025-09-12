@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use App\Services\ReviewService;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
 
 class ReviewController extends Controller
@@ -20,7 +19,7 @@ class ReviewController extends Controller
     /**
      * Display a listing of reviews.
      */
-    public function index(ReviewListRequest $request): AnonymousResourceCollection
+    public function index(ReviewListRequest $request)
     {
         $requestData = $request->all();
         $reviews = $this->reviewService->getFilteredReviews($requestData);
