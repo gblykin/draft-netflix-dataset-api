@@ -13,10 +13,16 @@ echo "🐳 Building Docker containers..."
 docker-compose up -d --build
 
 echo "📦 Installing Composer dependencies..."
-docker-compose exec composer install --no-interaction --prefer-dist --optimize-autoloader
+docker-compose run --rm composer install --no-interaction --prefer-dist --optimize-autoloader
+
+echo "📋 Creating .env file from .env.example..."
+docker-compose exec app cp .env.example .env
 
 echo "🔑 Generating application key..."
 docker-compose exec app php artisan key:generate
+
+echo "⏳ Waiting for database to be ready..."
+sleep 15
 
 echo "🗄️ Running database migrations..."
 docker-compose exec app php artisan migrate --force
