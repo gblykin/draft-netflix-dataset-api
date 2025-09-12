@@ -39,17 +39,5 @@ class UserService
     }
 
 
-    public function getUsersByCountry(string $country): LengthAwarePaginator
-    {
-        return User::where('country', 'like', '%' . $country . '%')
-            ->with(['reviews', 'reviewedMovies'])
-            ->paginate(15);
-    }
 
-    public function getActiveUsers(): LengthAwarePaginator
-    {
-        return User::where('is_active', true)
-            ->with(['reviews', 'reviewedMovies'])
-            ->paginate(15);
-    }
 }

@@ -328,7 +328,7 @@ docker-compose exec app php artisan route:list
 
 ### Bonus Features
 - ✅ Laravel Resource classes for API responses
-- ✅ Unit tests for API endpoints (54 tests, 258 assertions)
+- ✅ Unit tests for API endpoints
 - ✅ Advanced filtering and sorting options
 - ✅ Error handling and validation
 - ✅ Clean, maintainable code structure

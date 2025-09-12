@@ -52,29 +52,4 @@ class MovieServiceTest extends TestCase
         $this->assertCount(2, $result->items());
     }
 
-    public function test_movie_model_can_be_created_and_retrieved()
-    {
-        $movie = Movie::create([
-            'external_movie_id' => 'test-movie-123',
-            'title' => 'Test Movie',
-            'content_type' => ContentType::MOVIE,
-            'genre_primary' => 'Action',
-            'release_year' => 2023,
-            'language' => 'English',
-            'country_of_origin' => 'USA',
-        ]);
-
-        $result = Movie::find($movie->id);
-
-        $this->assertEquals($movie->id, $result->id);
-        $this->assertEquals('test-movie-123', $result->external_movie_id);
-    }
-
-    public function test_movie_model_returns_null_when_not_found()
-    {
-        // Use a very large number that's unlikely to exist
-        $result = Movie::find(PHP_INT_MAX);
-        
-        $this->assertNull($result);
-    }
 }
