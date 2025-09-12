@@ -54,21 +54,13 @@ class ImportCsvData extends Command
 
     private function displayHeaders($importer): void
     {
-        $reader = $importer->getStats()['headers'] ?? [];
-        
-        if (empty($reader)) {
-            // Get headers from the reader directly if not available in stats
-            $reflection = new \ReflectionClass($importer);
-            $readerProperty = $reflection->getProperty('reader');
-            $readerProperty->setAccessible(true);
-            $readerInstance = $readerProperty->getValue($importer);
-            $reader = $readerInstance->getHeaders();
-        }
+        $reader = $importer->getReader();
+        $headers = $reader->getHeaders();
         
         $this->info("CSV Headers detected:");
         $this->table(['Column Index', 'Header Name'], 
             array_map(fn($index, $header) => [$index, $header], 
-            array_keys($reader), $reader)
+            array_keys($headers), $headers)
         );
     }
 
@@ -76,14 +68,8 @@ class ImportCsvData extends Command
     {
         $this->info("Performing dry run - analyzing first 10 records...");
         
-        $reflection = new \ReflectionClass($importer);
-        $readerProperty = $reflection->getProperty('reader');
-        $readerProperty->setAccessible(true);
-        $reader = $readerProperty->getValue($importer);
-        
-        $transformerProperty = $reflection->getProperty('transformer');
-        $transformerProperty->setAccessible(true);
-        $transformer = $transformerProperty->getValue($importer);
+        $reader = $importer->getReader();
+        $transformer = $importer->getTransformer();
         
         $headers = $reader->getHeaders();
         $count = 0;

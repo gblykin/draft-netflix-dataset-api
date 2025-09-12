@@ -7,6 +7,25 @@ use App\Models\Movie;
 
 class ReviewDataTransformer extends BaseDataTransformer
 {
+    public function transform(array $rawData, array $headers): array
+    {
+        $this->validationErrors = [];
+        $transformedData = [];
+
+        foreach ($this->getColumnMapping() as $targetColumn => $possibleColumns) {
+            $value = $this->findColumnValue($rawData, $possibleColumns);
+            
+            if ($value !== null) {
+                $transformedData[$targetColumn] = $this->transformValue($targetColumn, $value);
+            }
+        }
+
+        // Transform external IDs to internal IDs
+        $transformedData = $this->transformExternalIds($transformedData);
+
+        return $transformedData;
+    }
+
     protected function getColumnMapping(): array
     {
         return [

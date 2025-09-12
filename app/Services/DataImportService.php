@@ -5,20 +5,21 @@ namespace App\Services;
 use App\Contracts\DataReaderInterface;
 use App\Contracts\DataWriterInterface;
 use App\Contracts\DataTransformerInterface;
+use App\Contracts\ProgressReporterInterface;
 
 class DataImportService
 {
     private DataReaderInterface $reader;
     private DataWriterInterface $writer;
     private DataTransformerInterface $transformer;
-    private ImportProgressReporter $progressReporter;
+    private ProgressReporterInterface $progressReporter;
     private ImportLogger $logger;
 
     public function __construct(
         DataReaderInterface $reader,
         DataWriterInterface $writer,
         DataTransformerInterface $transformer,
-        ImportProgressReporter $progressReporter = null,
+        ProgressReporterInterface $progressReporter = null,
         ImportLogger $logger = null
     ) {
         $this->reader = $reader;
@@ -86,6 +87,16 @@ class DataImportService
         return $this->progressReporter->getStats()['errors'] ?? [];
     }
 
+    public function getReader(): DataReaderInterface
+    {
+        return $this->reader;
+    }
+
+    public function getTransformer(): DataTransformerInterface
+    {
+        return $this->transformer;
+    }
+
     /**
      * Get a more informative error message for write failures
      */
@@ -109,11 +120,6 @@ class DataImportService
             
             // Transform the data
             $transformedData = $this->transformer->transform($rawData, $headers);
-            
-            // Special handling for reviews - transform external IDs to internal IDs
-            if ($this->transformer instanceof \App\Services\DataTransformers\ReviewDataTransformer) {
-                $transformedData = $this->transformer->transformExternalIds($transformedData);
-            }
             
             // Validate the transformed data
             if (!$this->transformer->validate($transformedData)) {

@@ -12,13 +12,6 @@ interface DataWriterInterface
      */
     public function writeRecord(array $data): bool;
 
-    /**
-     * Write multiple records in batch
-     *
-     * @param array $records
-     * @return int Number of records written
-     */
-    public function writeBatch(array $records): int;
 
     /**
      * Begin a transaction (if supported)

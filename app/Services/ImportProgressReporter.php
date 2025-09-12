@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-class ImportProgressReporter
+use App\Contracts\ProgressReporterInterface;
+
+class ImportProgressReporter implements ProgressReporterInterface
 {
     private array $stats = [];
     private int $lastReportedCount = 0;
