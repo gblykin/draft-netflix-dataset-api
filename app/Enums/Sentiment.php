@@ -42,9 +42,9 @@ enum Sentiment: string
     public function scoreRange(): array
     {
         return match($this) {
-            self::POSITIVE => [0.1, 1.0],
-            self::NEGATIVE => [-1.0, -0.1],
-            self::NEUTRAL => [-0.1, 0.1],
+            self::POSITIVE => [0.6, 1.0],
+            self::NEGATIVE => [0.0, 0.4],
+            self::NEUTRAL => [0.4, 0.6],
         };
     }
 
