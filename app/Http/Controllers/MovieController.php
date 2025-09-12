@@ -27,19 +27,11 @@ class MovieController extends Controller
     /**
      * Display the specified movie with its reviews and users.
      */
-    public function show(string $id): MovieResource|\Illuminate\Http\JsonResponse
+    public function show(Movie $movie): MovieResource
     {
-        // Validate that ID is numeric
-        if (!is_numeric($id)) {
-            return response()->json(['message' => 'Movie not found'], 404);
-        }
-
-        try {
-            $movie = $this->movieService->getMovieById($id);
-            return new MovieResource($movie);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json(['message' => 'Movie not found'], 404);
-        }
+        // Load relationships for the movie
+        $movie->load(['reviews.user']);
+        return new MovieResource($movie);
     }
 }
 

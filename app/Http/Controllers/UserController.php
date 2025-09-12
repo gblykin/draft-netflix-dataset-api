@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserListRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -26,9 +27,10 @@ class UserController extends Controller
     /**
      * Display the specified user with their reviews and movies.
      */
-    public function show(string $id): UserResource
+    public function show(User $user): UserResource
     {
-        $user = $this->userService->getUserById($id);
+        // Load relationships for the user
+        $user->load(['reviews.movie', 'reviewedMovies']);
         return new UserResource($user);
     }
 }

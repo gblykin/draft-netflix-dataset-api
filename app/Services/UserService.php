@@ -38,12 +38,6 @@ class UserService
         return $filterService->apply();
     }
 
-    public function getUserById(string $id): User
-    {
-        return User::with(['reviews.movie', 'reviewedMovies'])
-            ->where('id', $id)
-            ->firstOrFail();
-    }
 
     public function getUsersByCountry(string $country): LengthAwarePaginator
     {

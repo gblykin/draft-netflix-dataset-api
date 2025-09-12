@@ -228,7 +228,7 @@ class UserApiTest extends TestCase
 
     public function test_user_not_found()
     {
-        $response = $this->getJson('/api/users/999999');
+        $response = $this->getJson('/api/users/' . PHP_INT_MAX);
 
         $response->assertStatus(404);
     }

@@ -36,6 +36,10 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - **External IDs**: CSV data uses external identifiers (`external_user_id`, `external_movie_id`, `external_review_id`) for mapping
 - **Foreign Keys**: Relationships use internal IDs for referential integrity
 - **CSV Mapping**: External IDs are preserved for data import/export operations
+- **Enum Fields**: Several fields use PHP enums for type safety and validation:
+  - **Users**: `gender`, `subscription_plan`, `primary_device`
+  - **Movies**: `content_type`
+  - **Reviews**: `device_type`, `sentiment`
 
 ## 🚀 Quick Start with Docker
 
@@ -97,12 +101,13 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `genre` - Filter by genre (searches both primary and secondary genres)
 - `genre_primary` - Filter by primary genre only (partial match)
 - `genre_secondary` - Filter by secondary genre only (partial match)
-- `content_type` - Filter by content type (Movie, TV Series, etc.)
+- `content_type` - Filter by content type (Movie, TV Series, Documentary, Stand-up Comedy, Limited Series)
 - `release_year` - Filter by release year (exact match)
 - `rating` - Filter by MPAA rating (exact match)
 - `country_of_origin` - Filter by country of origin (partial match)
 - `language` - Filter by language (partial match)
 - `is_netflix_original` - Filter by Netflix original status (true/false)
+- `content_warning` - Filter by content warning status (true/false)
 - `sort_by` - Sort by field (title, release_year, duration_minutes, production_budget, box_office_revenue, imdb_rating)
 - `sort_order` - Sort order (asc, desc)
 - `page` - Page number
@@ -113,13 +118,13 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `GET /api/users/{id}` - Get user details with reviews and movies
 
 **Query Parameters for Users:**
-- `subscription_plan` - Filter by subscription plan (exact match)
+- `subscription_plan` - Filter by subscription plan (Basic, Standard, Premium, Premium+)
 - `country` - Filter by country (partial match)
-- `gender` - Filter by gender (exact match)
+- `gender` - Filter by gender (Male, Female, Prefer not to say, Other)
 - `age_min` - Minimum age filter
 - `age_max` - Maximum age filter
 - `is_active` - Filter by active status (true/false)
-- `primary_device` - Filter by primary device (partial match)
+- `primary_device` - Filter by primary device (Mobile, Desktop, Tablet, Smart TV, Laptop, Gaming Console, Other)
 - `household_size_min` - Minimum household size filter
 - `household_size_max` - Maximum household size filter
 - `exclude_reviewed_movies` - Exclude reviewed movies for better performance (true/false)
@@ -143,11 +148,11 @@ The API uses 3 CSV files from the Netflix 2025 User Behavior dataset:
 - `rating` - Filter by exact rating (1-5)
 - `rating_min` - Minimum rating filter
 - `rating_max` - Maximum rating filter
-- `device_type` - Filter by device type (partial match)
+- `device_type` - Filter by device type (Mobile, Desktop, Tablet, Smart TV, Laptop, Gaming Console, Other)
 - `is_verified_watch` - Filter by verified watch status (true/false)
-- `sentiment` - Filter by sentiment (exact match)
-- `sentiment_score_min` - Minimum sentiment score filter
-- `sentiment_score_max` - Maximum sentiment score filter
+- `sentiment` - Filter by sentiment (positive, negative, neutral)
+- `sentiment_score_min` - Minimum sentiment score filter (-1.0 to 1.0)
+- `sentiment_score_max` - Maximum sentiment score filter (-1.0 to 1.0)
 - `date_from` - Filter reviews from date (YYYY-MM-DD)
 - `date_to` - Filter reviews to date (YYYY-MM-DD)
 - `sort_by` - Sort by field (review_date, rating, helpful_votes, total_votes, sentiment_score)
@@ -183,14 +188,14 @@ curl "http://localhost:8000/api/movies?sort_by=release_year&sort_order=desc&per_
 
 ### Get Movie Details
 ```bash
-# Get specific movie with reviews and users (using external movie ID)
-curl "http://localhost:8000/api/movies/movie_0001"
+# Get specific movie with reviews and users (using internal movie ID)
+curl "http://localhost:8000/api/movies/1"
 ```
 
 ### Get Users with Filtering
 ```bash
 # Get premium subscribers from USA
-curl "http://localhost:8000/api/users?subscription_type=Premium&country=USA"
+curl "http://localhost:8000/api/users?subscription_plan=Premium&country=USA"
 
 # Get users aged 25-35
 curl "http://localhost:8000/api/users?age_min=25&age_max=35"
@@ -201,32 +206,34 @@ curl "http://localhost:8000/api/users?age_min=25&age_max=35"
 curl -X POST "http://localhost:8000/api/reviews" \
   -H "Content-Type: application/json" \
   -d '{
-    "external_review_id": "new_review_123",
-    "external_user_id": "user_00001",
-    "external_movie_id": "movie_0001",
+    "user_id": 1,
+    "movie_id": 1,
     "rating": 5,
     "review_text": "Excellent movie!",
-    "review_date": "2024-01-15",
     "device_type": "Mobile",
-    "is_verified_watch": true
+    "is_verified_watch": true,
+    "sentiment": "positive",
+    "sentiment_score": 0.8
   }'
 ```
 
 ### Update a Review
 ```bash
-curl -X PUT "http://localhost:8000/api/reviews/review_000001" \
+curl -X PUT "http://localhost:8000/api/reviews/1" \
   -H "Content-Type: application/json" \
   -d '{
     "rating": 4,
     "review_text": "Good movie, but not perfect.",
     "helpful_votes": 5,
-    "total_votes": 8
+    "total_votes": 8,
+    "sentiment": "positive",
+    "sentiment_score": 0.6
   }'
 ```
 
 ### Delete a Review
 ```bash
-curl -X DELETE "http://localhost:8000/api/reviews/review_000001"
+curl -X DELETE "http://localhost:8000/api/reviews/1"
 ```
 
 
@@ -321,7 +328,7 @@ docker-compose exec app php artisan route:list
 
 ### Bonus Features
 - ✅ Laravel Resource classes for API responses
-- ✅ Unit tests for API endpoints (33 tests, 120 assertions)
+- ✅ Unit tests for API endpoints (54 tests, 258 assertions)
 - ✅ Advanced filtering and sorting options
 - ✅ Error handling and validation
 - ✅ Clean, maintainable code structure

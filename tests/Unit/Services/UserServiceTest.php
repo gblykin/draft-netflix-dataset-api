@@ -65,7 +65,7 @@ class UserServiceTest extends TestCase
         $this->assertCount(2, $result->items());
     }
 
-    public function test_get_user_by_id_returns_correct_user()
+    public function test_user_model_can_be_created_and_retrieved()
     {
         $user = $this->createTestUser([
             'external_user_id' => 'test-user-123',
@@ -76,7 +76,7 @@ class UserServiceTest extends TestCase
             'city' => 'Los Angeles',
         ]);
 
-        $result = $this->userService->getUserById($user->id);
+        $result = User::find($user->id);
 
         $this->assertEquals($user->id, $result->id);
         $this->assertEquals('test-user-123', $result->external_user_id);

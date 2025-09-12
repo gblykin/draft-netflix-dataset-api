@@ -209,7 +209,7 @@ class ReviewApiTest extends TestCase
 
     public function test_review_not_found()
     {
-        $response = $this->getJson('/api/reviews/999999');
+        $response = $this->getJson('/api/reviews/' . PHP_INT_MAX);
 
         $response->assertStatus(404);
     }

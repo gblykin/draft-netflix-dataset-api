@@ -105,7 +105,7 @@ class ReviewServiceTest extends TestCase
         $this->assertCount(2, $result->items());
     }
 
-    public function test_get_review_by_id_returns_correct_review()
+    public function test_review_model_can_be_created_and_retrieved()
     {
         $user = $this->createTestUser([
             'external_user_id' => 'test-user-1',
@@ -125,7 +125,7 @@ class ReviewServiceTest extends TestCase
             'rating' => 5,
         ]);
 
-        $result = $this->reviewService->getReviewById($review->id);
+        $result = Review::find($review->id);
 
         $this->assertEquals($review->id, $result->id);
         $this->assertEquals('test-review-123', $result->external_review_id);
@@ -183,10 +183,11 @@ class ReviewServiceTest extends TestCase
 
         $data = ['rating' => 5, 'review_text' => 'Updated review'];
 
-        $result = $this->reviewService->updateReview($review->id, $data);
+        $this->reviewService->updateReview($review, $data);
 
-        $this->assertEquals(5, $result->rating);
-        $this->assertEquals('Updated review', $result->review_text);
+        $review->refresh();
+        $this->assertEquals(5, $review->rating);
+        $this->assertEquals('Updated review', $review->review_text);
     }
 
     public function test_delete_review_returns_true()
@@ -209,7 +210,7 @@ class ReviewServiceTest extends TestCase
             'rating' => 5,
         ]);
 
-        $result = $this->reviewService->deleteReview($review->id);
+        $result = $this->reviewService->deleteReview($review);
 
         $this->assertTrue($result);
         $this->assertDatabaseMissing('reviews', ['external_review_id' => 'test-review-123']);

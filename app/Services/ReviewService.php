@@ -32,21 +32,13 @@ class ReviewService
         return $review;
     }
 
-    public function updateReview(string $id, array $data): Review
+    public function updateReview(Review $review, array $data): void
     {
-        $review = Review::where('id', $id)
-            ->firstOrFail();
-
         $review->update($data);
-        $review->load(['user', 'movie']);
-        return $review;
     }
 
-    public function deleteReview(string $id): bool
+    public function deleteReview(Review $review): bool
     {
-        $review = Review::where('id', $id)
-            ->firstOrFail();
-
         return $review->delete();
     }
 

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ReviewListRequest;
+use App\Http\Requests\StoreReviewRequest;
+use App\Http\Requests\UpdateReviewRequest;
 use App\Http\Resources\ReviewResource;
+use App\Models\Review;
 use App\Services\ReviewService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Validation\ValidationException;
 
 class ReviewController extends Controller
 {
@@ -24,83 +24,45 @@ class ReviewController extends Controller
     {
         $requestData = $request->all();
         $reviews = $this->reviewService->getFilteredReviews($requestData);
+        $reviews->load(['user', 'movie']);
         return ReviewResource::collection($reviews);
     }
 
     /**
      * Display the specified review.
      */
-    public function show(string $id): ReviewResource
+    public function show(Review $review): ReviewResource
     {
-        $review = $this->reviewService->getReviewById($id);
+        $review->load(['user', 'movie']);
         return new ReviewResource($review);
     }
 
     /**
      * Store a newly created review.
      */
-    public function store(Request $request): ReviewResource|JsonResource
+    public function store(StoreReviewRequest $request): ReviewResource
     {
-        try {
-            $validated = $request->validate([
-                'user_id' => 'required|integer|exists:users,id',
-                'movie_id' => 'required|integer|exists:movies,id',
-                'rating' => 'required|integer|min:1|max:5',
-                'review_text' => 'nullable|string|max:2000',
-                'device_type' => 'nullable|string|max:255',
-                'is_verified_watch' => 'nullable|boolean',
-                'helpful_votes' => 'nullable|integer|min:0',
-                'total_votes' => 'nullable|integer|min:0',
-                'sentiment' => 'nullable|string|in:positive,negative,neutral',
-                'sentiment_score' => 'nullable|numeric|min:-1|max:1',
-            ]);
-
-            // Always set current date for API-created reviews
-            $validated['review_date'] = now()->toDateString();
-
-            $review = $this->reviewService->createReview($validated);
-            return new ReviewResource($review);
-        } catch (ValidationException $e) {
-            return JsonResource::make([
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
-        }
+        $validated = $request->validated();
+        $review = $this->reviewService->createReview($validated);
+        return new ReviewResource($review);
     }
 
     /**
      * Update the specified review.
      */
-    public function update(Request $request, string $id): ReviewResource|JsonResponse
+    public function update(UpdateReviewRequest $request, Review $review): ReviewResource
     {
-        try {
-            $validated = $request->validate([
-                'rating' => 'sometimes|integer|min:1|max:5',
-                'review_text' => 'sometimes|nullable|string|max:2000',
-                'helpful_votes' => 'sometimes|integer|min:0',
-                'total_votes' => 'sometimes|integer|min:0',
-                'device_type' => 'sometimes|string|max:255',
-                'is_verified_watch' => 'sometimes|boolean',
-                'sentiment' => 'sometimes|string|in:positive,negative,neutral',
-                'sentiment_score' => 'sometimes|numeric|min:-1|max:1',
-            ]);
-
-            $review = $this->reviewService->updateReview($id, $validated);
-            return new ReviewResource($review);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
-        }
+        $validated = $request->validated();
+        $this->reviewService->updateReview($review, $validated);
+        return new ReviewResource($review->fresh());
     }
 
     /**
      * Remove the specified review.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(Review $review): JsonResponse
     {
-        $this->reviewService->deleteReview($id);
+        $this->reviewService->deleteReview($review);
 
         return response()->json([
             'message' => 'Review deleted successfully'

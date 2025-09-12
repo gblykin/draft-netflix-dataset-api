@@ -255,7 +255,7 @@ class MovieApiTest extends TestCase
 
     public function test_movie_not_found()
     {
-        $response = $this->getJson('/api/movies/999999');
+        $response = $this->getJson('/api/movies/' . PHP_INT_MAX);
 
         $response->assertStatus(404);
     }

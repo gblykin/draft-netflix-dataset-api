@@ -374,6 +374,34 @@
 					"response": []
 				},
 				{
+					"name": "List Users - Filter by Gender (Female)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/users?gender=Female&subscription_plan=Premium",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "gender",
+									"value": "Female"
+								},
+								{
+									"key": "subscription_plan",
+									"value": "Premium"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "List Users - Age Range Filter",
 					"request": {
 						"method": "GET",
@@ -620,7 +648,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"review_id\": \"new_review_test\",\n  \"user_id\": \"{{user_id}}\",\n  \"movie_id\": \"{{movie_id}}\",\n  \"rating\": 5,\n  \"review_text\": \"Excellent movie! Highly recommended.\",\n  \"device_type\": \"Mobile\",\n  \"is_verified_watch\": true,\n  \"helpful_votes\": 0,\n  \"total_votes\": 0,\n  \"sentiment\": \"positive\",\n  \"sentiment_score\": 0.8\n}"
+							"raw": "{\n  \"user_id\": {{user_id}},\n  \"movie_id\": {{movie_id}},\n  \"rating\": 5,\n  \"review_text\": \"Excellent movie! Highly recommended.\",\n  \"device_type\": \"Mobile\",\n  \"is_verified_watch\": true,\n  \"helpful_votes\": 0,\n  \"total_votes\": 0,\n  \"sentiment\": \"positive\",\n  \"sentiment_score\": 0.8\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/reviews",
@@ -723,7 +751,7 @@
 		},
 		{
 			"key": "review_id",
-			"value": "6308",
+			"value": "1",
 			"type": "string"
 		}
 	]

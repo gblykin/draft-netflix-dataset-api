@@ -17,17 +17,5 @@ class MovieService
         return $filterService->apply();
     }
 
-    public function getMovieById(string $id): Movie
-    {
-        $movie = Movie::with(['reviews.user'])
-            ->where('id', $id)
-            ->first();
-            
-        if (!$movie) {
-            throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
-        }
-        
-        return $movie;
-    }
 }
 
